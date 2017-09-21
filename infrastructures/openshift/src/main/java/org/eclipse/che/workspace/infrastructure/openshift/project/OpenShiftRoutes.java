@@ -10,7 +10,7 @@
  */
 package org.eclipse.che.workspace.infrastructure.openshift.project;
 
-import static org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftSpace.CHE_WORKSPACE_ID_LABEL;
+import static org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftNamespace.CHE_WORKSPACE_LABEL;
 
 import io.fabric8.kubernetes.client.KubernetesClientException;
 import io.fabric8.openshift.api.model.Route;
@@ -45,7 +45,7 @@ public class OpenShiftRoutes {
    */
   public Route create(Route route) throws InfrastructureException {
     try (OpenShiftClient client = clientFactory.create()) {
-      route.getMetadata().getLabels().put(CHE_WORKSPACE_ID_LABEL, workspaceId);
+      route.getMetadata().getLabels().put(CHE_WORKSPACE_LABEL, workspaceId);
       return client.routes().inNamespace(namespace).create(route);
     } catch (KubernetesClientException e) {
       throw new InfrastructureException(e.getMessage(), e);
@@ -62,7 +62,7 @@ public class OpenShiftRoutes {
       return client
           .routes()
           .inNamespace(namespace)
-          .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
+          .withLabel(CHE_WORKSPACE_LABEL, workspaceId)
           .list()
           .getItems();
     } catch (KubernetesClientException e) {
@@ -80,7 +80,7 @@ public class OpenShiftRoutes {
       client
           .routes()
           .inNamespace(namespace)
-          .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
+          .withLabel(CHE_WORKSPACE_LABEL, workspaceId)
           .delete();
     } catch (KubernetesClientException e) {
       throw new InfrastructureException(e.getMessage(), e);

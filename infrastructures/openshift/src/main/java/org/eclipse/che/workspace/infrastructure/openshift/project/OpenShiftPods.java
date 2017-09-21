@@ -11,7 +11,7 @@
 package org.eclipse.che.workspace.infrastructure.openshift.project;
 
 import static java.util.concurrent.CompletableFuture.allOf;
-import static org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftSpace.CHE_WORKSPACE_ID_LABEL;
+import static org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftNamespace.CHE_WORKSPACE_LABEL;
 
 import io.fabric8.kubernetes.api.model.DoneablePod;
 import io.fabric8.kubernetes.api.model.Pod;
@@ -72,7 +72,7 @@ public class OpenShiftPods {
    * @throws InfrastructureException when any exception occurs
    */
   public Pod create(Pod pod) throws InfrastructureException {
-    pod.getMetadata().getLabels().put(CHE_WORKSPACE_ID_LABEL, workspaceId);
+    pod.getMetadata().getLabels().put(CHE_WORKSPACE_LABEL, workspaceId);
     try (OpenShiftClient client = clientFactory.create()) {
       return client.pods().inNamespace(namespace).create(pod);
     } catch (KubernetesClientException e) {
@@ -90,7 +90,7 @@ public class OpenShiftPods {
       return client
           .pods()
           .inNamespace(namespace)
-          .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
+          .withLabel(CHE_WORKSPACE_LABEL, workspaceId)
           .list()
           .getItems();
     } catch (KubernetesClientException e) {
@@ -199,7 +199,7 @@ public class OpenShiftPods {
             client
                 .pods()
                 .inNamespace(namespace)
-                .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
+                .withLabel(CHE_WORKSPACE_LABEL, workspaceId)
                 .watch(watcher);
       } catch (KubernetesClientException ex) {
         throw new InfrastructureException(ex.getMessage());
@@ -271,7 +271,7 @@ public class OpenShiftPods {
           client
               .pods()
               .inNamespace(namespace)
-              .withLabel(CHE_WORKSPACE_ID_LABEL, workspaceId)
+              .withLabel(CHE_WORKSPACE_LABEL, workspaceId)
               .list()
               .getItems();
       List<CompletableFuture> deleteFutures = new ArrayList<>();

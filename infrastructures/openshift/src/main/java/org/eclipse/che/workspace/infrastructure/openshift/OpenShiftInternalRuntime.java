@@ -48,7 +48,7 @@ import org.eclipse.che.api.workspace.shared.dto.event.ServerStatusEvent;
 import org.eclipse.che.dto.server.DtoFactory;
 import org.eclipse.che.workspace.infrastructure.openshift.bootstrapper.OpenShiftBootstrapperFactory;
 import org.eclipse.che.workspace.infrastructure.openshift.environment.OpenShiftEnvironment;
-import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftSpace;
+import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftNamespace;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,12 +68,12 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
   private final OpenShiftBootstrapperFactory bootstrapperFactory;
   private final Map<String, OpenShiftMachine> machines;
   private final int machineStartTimeoutMin;
-  private final OpenShiftSpace project;
+  private final OpenShiftNamespace namespace;
 
   @Inject
   public OpenShiftInternalRuntime(
       @Assisted OpenShiftRuntimeContext context,
-      @Assisted OpenShiftSpace project,
+      @Assisted OpenShiftNamespace openShiftNamespace,
       URLRewriter.NoOpURLRewriter urlRewriter,
       EventService eventService,
       OpenShiftBootstrapperFactory bootstrapperFactory,
@@ -84,26 +84,26 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
     this.bootstrapperFactory = bootstrapperFactory;
     this.serverCheckerFactory = serverCheckerFactory;
     this.machineStartTimeoutMin = machineStartTimeoutMin;
-    this.project = project;
+    this.namespace = openShiftNamespace;
     this.machines = new ConcurrentHashMap<>();
   }
 
   @Override
   protected void internalStart(Map<String, String> startOptions) throws InfrastructureException {
     try {
-      project.cleanUp();
+      namespace.cleanUp();
 
       final OpenShiftEnvironment osEnv = getContext().getOpenShiftEnvironment();
       prepareOpenShiftPVCs(osEnv.getPersistentVolumeClaims());
 
       final List<Service> createdServices = new ArrayList<>();
       for (Service service : osEnv.getServices().values()) {
-        createdServices.add(project.services().create(service));
+        createdServices.add(namespace.services().create(service));
       }
 
       final List<Route> createdRoutes = new ArrayList<>();
       for (Route route : osEnv.getRoutes().values()) {
-        createdRoutes.add(project.routes().create(route));
+        createdRoutes.add(namespace.routes().create(route));
       }
 
       registerAbnormalStopHandler();
@@ -126,7 +126,7 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
       LOG.error("Failed to start of OpenShift runtime. " + e.getMessage());
       boolean interrupted = Thread.interrupted() || e instanceof InterruptedException;
       try {
-        project.cleanUp();
+        namespace.cleanUp();
       } catch (InfrastructureException ignored) {
       }
       if (interrupted) {
@@ -149,7 +149,7 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
 
   @Override
   protected void internalStop(Map<String, String> stopOptions) throws InfrastructureException {
-    project.cleanUp();
+    namespace.cleanUp();
   }
 
   @Override
@@ -158,7 +158,7 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
   }
 
   private void registerAbnormalStopHandler() throws InfrastructureException {
-    project
+    namespace
         .pods()
         .watch(
             (action, pod) -> {
@@ -218,7 +218,7 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
       throws InfrastructureException {
     final ServerResolver serverResolver = ServerResolver.of(services, routes);
     for (Pod toCreate : getContext().getOpenShiftEnvironment().getPods().values()) {
-      final Pod createdPod = project.pods().create(toCreate);
+      final Pod createdPod = namespace.pods().create(toCreate);
       final ObjectMeta podMetadata = createdPod.getMetadata();
       for (Container container : createdPod.getSpec().getContainers()) {
         OpenShiftMachine machine =
@@ -227,7 +227,7 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
                 podMetadata.getName(),
                 container.getName(),
                 serverResolver.resolve(createdPod, container),
-                project);
+                namespace);
         machines.put(machine.getName(), machine);
         sendStartingEvent(machine.getName());
       }
@@ -237,7 +237,7 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
   private void prepareOpenShiftPVCs(Map<String, PersistentVolumeClaim> pvcs)
       throws InfrastructureException {
     Set<String> existing =
-        project
+        namespace
             .persistentVolumeClaims()
             .get()
             .stream()
@@ -246,7 +246,7 @@ public class OpenShiftInternalRuntime extends InternalRuntime<OpenShiftRuntimeCo
 
     for (Map.Entry<String, PersistentVolumeClaim> pvcEntry : pvcs.entrySet()) {
       if (!existing.contains(pvcEntry.getKey())) {
-        project.persistentVolumeClaims().create(pvcEntry.getValue());
+        namespace.persistentVolumeClaims().create(pvcEntry.getValue());
       }
     }
   }

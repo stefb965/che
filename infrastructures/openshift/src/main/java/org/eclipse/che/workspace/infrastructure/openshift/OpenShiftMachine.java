@@ -19,7 +19,7 @@ import org.eclipse.che.api.core.model.workspace.runtime.Server;
 import org.eclipse.che.api.core.model.workspace.runtime.ServerStatus;
 import org.eclipse.che.api.workspace.server.model.impl.ServerImpl;
 import org.eclipse.che.api.workspace.server.spi.InfrastructureException;
-import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftSpace;
+import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftNamespace;
 
 /** @author Sergii Leshchenko */
 public class OpenShiftMachine implements Machine {
@@ -31,14 +31,14 @@ public class OpenShiftMachine implements Machine {
   private final String podName;
   private final String containerName;
   private final Map<String, ServerImpl> ref2Server;
-  private final OpenShiftSpace project;
+  private final OpenShiftNamespace namespace;
 
   public OpenShiftMachine(
       String machineName,
       String podName,
       String containerName,
       Map<String, ServerImpl> ref2Server,
-      OpenShiftSpace project) {
+      OpenShiftNamespace namespace) {
     this.machineName = machineName;
     this.podName = podName;
     this.containerName = containerName;
@@ -46,7 +46,7 @@ public class OpenShiftMachine implements Machine {
     if (ref2Server != null) {
       this.ref2Server.putAll(ref2Server);
     }
-    this.project = project;
+    this.namespace = namespace;
   }
 
   public String getName() {
@@ -73,11 +73,11 @@ public class OpenShiftMachine implements Machine {
   }
 
   public void exec(String... command) throws InfrastructureException {
-    project.pods().exec(podName, containerName, EXEC_TIMEOUT_MIN, command);
+    namespace.pods().exec(podName, containerName, EXEC_TIMEOUT_MIN, command);
   }
 
   public void waitRunning(int timeoutMin) throws InfrastructureException {
-    project
+    namespace
         .pods()
         .wait(
             podName,

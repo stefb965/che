@@ -23,7 +23,7 @@ import org.eclipse.che.api.workspace.server.spi.InternalRuntime;
 import org.eclipse.che.api.workspace.server.spi.RuntimeContext;
 import org.eclipse.che.api.workspace.server.spi.RuntimeInfrastructure;
 import org.eclipse.che.workspace.infrastructure.openshift.environment.OpenShiftEnvironment;
-import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftSpace;
+import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftSpaceFactory;
 
 /** @author Sergii Leshchenko */
 public class OpenShiftRuntimeContext extends RuntimeContext {
@@ -31,6 +31,7 @@ public class OpenShiftRuntimeContext extends RuntimeContext {
   private final OpenShiftEnvironment openShiftEnvironment;
   private final OpenShiftRuntimeFactory runtimeFactory;
   private final String websocketOutputEndpoint;
+  private final OpenShiftSpaceFactory spaceFactory;
 
   @Inject
   public OpenShiftRuntimeContext(
@@ -38,12 +39,14 @@ public class OpenShiftRuntimeContext extends RuntimeContext {
       @Assisted OpenShiftEnvironment openShiftEnvironment,
       @Assisted RuntimeIdentity identity,
       @Assisted RuntimeInfrastructure infrastructure,
+      @Assisted OpenShiftSpaceFactory spaceFactory,
       OpenShiftClientFactory clientFactory,
       OpenShiftRuntimeFactory runtimeFactory,
       @Named("che.websocket.endpoint") String cheWebsocketEndpoint)
       throws ValidationException, InfrastructureException {
 
     super(environment, identity, infrastructure);
+    this.spaceFactory = spaceFactory;
     this.clientFactory = clientFactory;
     this.runtimeFactory = runtimeFactory;
     this.openShiftEnvironment = openShiftEnvironment;
@@ -67,11 +70,10 @@ public class OpenShiftRuntimeContext extends RuntimeContext {
 
   @Override
   public InternalRuntime getRuntime() throws InfrastructureException {
+    final String workspaceId = getIdentity().getWorkspaceId();
     return runtimeFactory.create(
         this,
-        new OpenShiftSpace(
-            getIdentity().getWorkspaceId(), //TODO Strategy new project or existing
-            getIdentity().getWorkspaceId(),
-            clientFactory));
+        // TODO Strategy new project or existing
+        spaceFactory.createNamespace(workspaceId, workspaceId));
   }
 }

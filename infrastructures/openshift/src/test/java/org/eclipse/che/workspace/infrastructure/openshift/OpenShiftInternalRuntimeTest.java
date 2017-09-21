@@ -74,7 +74,7 @@ import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftPersi
 import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftPods;
 import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftRoutes;
 import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftServices;
-import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftSpace;
+import org.eclipse.che.workspace.infrastructure.openshift.project.OpenShiftNamespace;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -113,7 +113,7 @@ public class OpenShiftInternalRuntimeTest {
   @Mock private ServerCheckerFactory serverCheckerFactory;
   @Mock private OpenShiftBootstrapperFactory bootstrapperFactory;
   @Mock private OpenShiftEnvironment osEnv;
-  @Mock private OpenShiftSpace project;
+  @Mock private OpenShiftNamespace namespace;
   @Mock private OpenShiftPersistentVolumeClaims pvcs;
   @Mock private OpenShiftServices services;
   @Mock private OpenShiftRoutes routes;
@@ -131,7 +131,7 @@ public class OpenShiftInternalRuntimeTest {
     internalRuntime =
         new OpenShiftInternalRuntime(
             context,
-            project,
+            namespace,
             new URLRewriter.NoOpURLRewriter(),
             eventService,
             bootstrapperFactory,
@@ -139,12 +139,12 @@ public class OpenShiftInternalRuntimeTest {
             13);
     when(context.getOpenShiftEnvironment()).thenReturn(osEnv);
     when(context.getIdentity()).thenReturn(IDENTITY);
-    doNothing().when(project).cleanUp();
+    doNothing().when(namespace).cleanUp();
     doReturn(ImmutableMap.of(PVC_NAME, mockPvc())).when(osEnv).getPersistentVolumeClaims();
-    when(project.persistentVolumeClaims()).thenReturn(pvcs);
-    when(project.services()).thenReturn(services);
-    when(project.routes()).thenReturn(routes);
-    when(project.pods()).thenReturn(pods);
+    when(namespace.persistentVolumeClaims()).thenReturn(pvcs);
+    when(namespace.services()).thenReturn(services);
+    when(namespace.routes()).thenReturn(routes);
+    when(namespace.pods()).thenReturn(pods);
     when(pvcs.get()).thenReturn(emptyList());
     when(bootstrapperFactory.create(any(), anyListOf(InstallerImpl.class), any()))
         .thenReturn(bootstrapper);
@@ -182,34 +182,34 @@ public class OpenShiftInternalRuntimeTest {
 
   @Test(expectedExceptions = InfrastructureException.class)
   public void throwsInfrastructureExceptionWhenPVCsCreationFailed() throws Exception {
-    doNothing().when(project).cleanUp();
+    doNothing().when(namespace).cleanUp();
     doThrow(InfrastructureException.class).when(pvcs).get();
 
     try {
       internalRuntime.internalStart(emptyMap());
     } catch (Exception rethrow) {
-      verify(project, times(2)).cleanUp();
-      verify(project, never()).services();
-      verify(project, never()).routes();
-      verify(project, never()).pods();
+      verify(namespace, times(2)).cleanUp();
+      verify(namespace, never()).services();
+      verify(namespace, never()).routes();
+      verify(namespace, never()).pods();
       throw rethrow;
     }
   }
 
   @Test(expectedExceptions = InternalInfrastructureException.class)
   public void throwsInternalInfrastructureExceptionWhenRuntimeErrorOccurs() throws Exception {
-    doNothing().when(project).cleanUp();
+    doNothing().when(namespace).cleanUp();
     final OpenShiftPersistentVolumeClaims pvcs = mock(OpenShiftPersistentVolumeClaims.class);
-    when(project.persistentVolumeClaims()).thenReturn(pvcs);
+    when(namespace.persistentVolumeClaims()).thenReturn(pvcs);
     doThrow(RuntimeException.class).when(pvcs).create(any(PersistentVolumeClaim.class));
 
     try {
       internalRuntime.internalStart(emptyMap());
     } catch (Exception rethrow) {
-      verify(project, times(2)).cleanUp();
-      verify(project, never()).services();
-      verify(project, never()).routes();
-      verify(project, never()).pods();
+      verify(namespace, times(2)).cleanUp();
+      verify(namespace, never()).services();
+      verify(namespace, never()).routes();
+      verify(namespace, never()).pods();
       throw rethrow;
     }
   }
@@ -242,16 +242,16 @@ public class OpenShiftInternalRuntimeTest {
 
   @Test(expectedExceptions = InfrastructureException.class)
   public void throwsInfrastructureExceptionWhenErrorOccursAndCleanupFailed() throws Exception {
-    doNothing().doThrow(InfrastructureException.class).when(project).cleanUp();
+    doNothing().doThrow(InfrastructureException.class).when(namespace).cleanUp();
     doThrow(InfrastructureException.class).when(pvcs).get();
 
     try {
       internalRuntime.internalStart(emptyMap());
     } catch (Exception rethrow) {
-      verify(project, times(2)).cleanUp();
-      verify(project, never()).services();
-      verify(project, never()).routes();
-      verify(project, never()).pods();
+      verify(namespace, times(2)).cleanUp();
+      verify(namespace, never()).services();
+      verify(namespace, never()).routes();
+      verify(namespace, never()).pods();
       throw rethrow;
     }
   }
@@ -270,7 +270,7 @@ public class OpenShiftInternalRuntimeTest {
     try {
       internalRuntime.internalStart(emptyMap());
     } catch (Exception rethrow) {
-      verify(project, times(2)).cleanUp();
+      verify(namespace, times(2)).cleanUp();
       verify(pods, times(1)).create(any());
       verify(routes, times(1)).create(any());
       verify(services, times(1)).create(any());
@@ -282,16 +282,16 @@ public class OpenShiftInternalRuntimeTest {
 
   @Test
   public void stopsOpenShiftEnvironment() throws Exception {
-    doNothing().when(project).cleanUp();
+    doNothing().when(namespace).cleanUp();
 
     internalRuntime.internalStop(emptyMap());
 
-    verify(project, times(1)).cleanUp();
+    verify(namespace, times(1)).cleanUp();
   }
 
   @Test(expectedExceptions = InfrastructureException.class)
   public void throwsInfrastructureExceptionWhenOpenShiftProjectCleanupFailed() throws Exception {
-    doThrow(InfrastructureException.class).when(project).cleanUp();
+    doThrow(InfrastructureException.class).when(namespace).cleanUp();
 
     internalRuntime.internalStop(emptyMap());
   }
@@ -302,8 +302,8 @@ public class OpenShiftInternalRuntimeTest {
 
     internalRuntime.internalStart(emptyMap());
 
-    verify(project, times(2)).cleanUp();
-    verify(project, never()).pods();
+    verify(namespace, times(2)).cleanUp();
+    verify(namespace, never()).pods();
   }
 
   private static MachineStatusEvent newEvent(String machineName, MachineStatus status) {
