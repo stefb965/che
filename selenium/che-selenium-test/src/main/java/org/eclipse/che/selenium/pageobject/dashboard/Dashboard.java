@@ -24,7 +24,7 @@ import javax.annotation.PreDestroy;
 import org.eclipse.che.selenium.core.SeleniumWebDriver;
 import org.eclipse.che.selenium.core.provider.TestDashboardUrlProvider;
 import org.eclipse.che.selenium.core.provider.TestIdeUrlProvider;
-import org.eclipse.che.selenium.core.user.DefaultTestUser;
+import org.eclipse.che.selenium.core.user.TestUser;
 import org.eclipse.che.selenium.core.utils.WaitUtils;
 import org.eclipse.che.selenium.pageobject.site.LoginPage;
 import org.openqa.selenium.By;
@@ -39,7 +39,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 @Singleton
 public class Dashboard {
   protected final SeleniumWebDriver seleniumWebDriver;
-  protected final DefaultTestUser defaultUser;
+  protected final TestUser defaultUser;
 
   private final TestIdeUrlProvider testIdeUrlProvider;
   private final TestDashboardUrlProvider testDashboardUrlProvider;
@@ -48,7 +48,7 @@ public class Dashboard {
   @Inject
   public Dashboard(
       SeleniumWebDriver seleniumWebDriver,
-      DefaultTestUser defaultUser,
+      TestUser defaultUser,
       TestIdeUrlProvider testIdeUrlProvider,
       TestDashboardUrlProvider testDashboardUrlProvider,
       LoginPage loginPage) {

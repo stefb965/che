@@ -10,22 +10,37 @@
  */
 package org.eclipse.che.selenium.core.requestfactory;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.Singleton;
-import org.eclipse.che.selenium.core.user.DefaultTestUser;
+import static java.lang.String.format;
 
-/** @author Dmytro Nochevnov */
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
+import org.eclipse.che.selenium.core.user.TestUser;
+
+/**
+ * @author Dmytro Nochevnov
+ * @author Anton Korneta
+ */
 @Singleton
 public class TestDefaultUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
-  private Provider<DefaultTestUser> testUserProvider;
+
+  private final TestUser testUser;
+  private final TestAuthServiceClient authServiceClient;
 
   @Inject
-  public TestDefaultUserHttpJsonRequestFactory(Provider<DefaultTestUser> testUserProvider) {
-    this.testUserProvider = testUserProvider;
+  public TestDefaultUserHttpJsonRequestFactory(
+      TestAuthServiceClient authServiceClient, TestUser testUser) {
+    this.testUser = testUser;
+    this.authServiceClient = authServiceClient;
   }
 
+  @Override
   protected String getAuthToken() {
-    return testUserProvider.get().getAuthToken();
+    try {
+      return authServiceClient.login(testUser.getEmail(), testUser.getPassword());
+    } catch (Exception ex) {
+      throw new RuntimeException(
+          format("Failed to access get token for user '%s'", testUser.getName()));
+    }
   }
 }

@@ -68,10 +68,10 @@ public class TestWorkspaceServiceClient {
       TestApiEndpointUrlProvider apiEndpointProvider,
       TestUserNamespaceResolver userNamespaceResolver,
       TestUserHttpJsonRequestFactoryCreator userHttpJsonRequestFactoryCreator,
-      @Assisted String authToken) {
+      @Assisted TestUser testUser) {
     this(
         apiEndpointProvider,
-        userHttpJsonRequestFactoryCreator.create(authToken),
+        userHttpJsonRequestFactoryCreator.create(testUser),
         userNamespaceResolver);
   }
 

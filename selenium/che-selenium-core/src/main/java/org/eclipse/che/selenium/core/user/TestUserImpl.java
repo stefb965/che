@@ -12,7 +12,6 @@ package org.eclipse.che.selenium.core.user;
 
 import static java.lang.String.format;
 
-import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import java.util.ArrayList;
@@ -45,17 +44,32 @@ public class TestUserImpl implements TestUser {
   private final TestWorkspaceServiceClient workspaceServiceClient;
 
   /** To instantiate user with generated email and password. */
-  @Inject
+  @AssistedInject
   public TestUserImpl(
       TestUserServiceClient userServiceClient,
       TestAuthServiceClient authServiceClient,
-      TestWorkspaceServiceClientFactory workspaceServiceClientFactory)
+      TestWorkspaceServiceClientFactory wsServiceClientFactory)
       throws Exception {
     this(
         userServiceClient,
         authServiceClient,
-        workspaceServiceClientFactory,
-        NameGenerator.generate("user", 6) + "@some.mail",
+        wsServiceClientFactory,
+        NameGenerator.generate("user", 6) + "@some.mail");
+  }
+
+  /** To instantiate user with specific e-mail. */
+  @AssistedInject
+  public TestUserImpl(
+      TestUserServiceClient userServiceClient,
+      TestAuthServiceClient authServiceClient,
+      TestWorkspaceServiceClientFactory wsServiceClientFactory,
+      @Assisted("email") String email)
+      throws Exception {
+    this(
+        userServiceClient,
+        authServiceClient,
+        wsServiceClientFactory,
+        email,
         NameGenerator.generate("Pwd1", 6));
   }
 
@@ -64,54 +78,19 @@ public class TestUserImpl implements TestUser {
   public TestUserImpl(
       TestUserServiceClient userServiceClient,
       TestAuthServiceClient authServiceClient,
-      TestWorkspaceServiceClientFactory workspaceServiceClientFactory,
+      TestWorkspaceServiceClientFactory wsServiceClientFactory,
       @Assisted("email") String email,
       @Assisted("password") String password)
       throws Exception {
-    this(
-        email,
-        NameGenerator.generate("Pwd1", 6),
-        userServiceClient,
-        workspaceServiceClient,
-        authServiceClient);
-  }
-
-  /** To instantiate user with specific e-mail. */
-  public TestUserImpl(
-      String email,
-      String password,
-      TestUserServiceClient userServiceClient,
-      TestWorkspaceServiceClient workspaceServiceClient,
-      TestAuthServiceClient authServiceClient)
-      throws Exception {
     this.userServiceClient = userServiceClient;
-
     this.email = email;
     this.password = password;
     this.name = email.split("@")[0];
-
-    //    this.id = userServiceClient.create(email, password).getId();
-    this.id = "id";
+    this.userServiceClient.create(name, email, password);
+    this.authToken = authServiceClient.login(name, password);
+    this.id = userServiceClient.findByEmail(email).getId();
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
-
-    this.authToken = authServiceClient.login(getName(), getPassword());
-    this.workspaceServiceClient = workspaceServiceClientFactory.create(authToken);
-  }
-
-  /** To instantiate user with password. */
-  @AssistedInject
-  public TestUserImpl(
-      TestUserServiceClient userServiceClient,
-      TestAuthServiceClient authServiceClient,
-      TestWorkspaceServiceClientFactory workspaceServiceClientFactory,
-      @Assisted("email") String email)
-      throws Exception {
-    this(
-        userServiceClient,
-        authServiceClient,
-        workspaceServiceClientFactory,
-        email,
-        NameGenerator.generate("Pwd1", 6));
+    this.workspaceServiceClient = wsServiceClientFactory.create(this);
   }
 
   @Override
@@ -158,12 +137,12 @@ public class TestUserImpl implements TestUser {
       }
     }
 
-    //    try {
-    //      userServiceClient.deleteByEmail(email);
-    //      LOG.info("User name='{}', id='{}' removed", name, id);
-    //    } catch (Exception e) {
-    //      LOG.error(format("Failed to remove user email='%s', id='%s'", email, id), e);
-    //    }
+    try {
+      userServiceClient.remove(id);
+      LOG.info("User name='{}', id='{}' removed", name, id);
+    } catch (Exception e) {
+      LOG.error(format("Failed to remove user email='%s', id='%s'", email, id), e);
+    }
   }
 
   @Override

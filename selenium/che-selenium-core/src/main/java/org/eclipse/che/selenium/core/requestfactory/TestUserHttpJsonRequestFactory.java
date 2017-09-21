@@ -10,22 +10,33 @@
  */
 package org.eclipse.che.selenium.core.requestfactory;
 
+import static java.lang.String.format;
+
 import com.google.inject.assistedinject.Assisted;
-import java.util.Objects;
-import javax.inject.Inject;
+import com.google.inject.assistedinject.AssistedInject;
+import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
+import org.eclipse.che.selenium.core.user.TestUser;
 
 /** @author Dmytro Nochevnov */
 public class TestUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
 
-  private final String authToken;
+  private final TestUser testUser;
+  private final TestAuthServiceClient authServiceClient;
 
-  @Inject
-  public TestUserHttpJsonRequestFactory(@Assisted String authToken) {
-    Objects.requireNonNull(authToken);
-    this.authToken = authToken;
+  @AssistedInject
+  public TestUserHttpJsonRequestFactory(
+      TestAuthServiceClient authServiceClient, @Assisted TestUser testUser) {
+    this.authServiceClient = authServiceClient;
+    this.testUser = testUser;
   }
 
+  @Override
   protected String getAuthToken() {
-    return this.authToken;
+    try {
+      return authServiceClient.login(testUser.getEmail(), testUser.getPassword());
+    } catch (Exception ex) {
+      throw new RuntimeException(
+          format("Failed to access get token for user '%s'", testUser.getName()));
+    }
   }
 }

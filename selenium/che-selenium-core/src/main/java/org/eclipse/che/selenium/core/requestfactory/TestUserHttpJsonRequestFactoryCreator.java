@@ -10,7 +10,9 @@
  */
 package org.eclipse.che.selenium.core.requestfactory;
 
+import org.eclipse.che.selenium.core.user.TestUser;
+
 /** @author Dmytro Nochevnov */
 public interface TestUserHttpJsonRequestFactoryCreator {
-  TestUserHttpJsonRequestFactory create(String authToken);
+  TestUserHttpJsonRequestFactory create(TestUser testuser);
 }

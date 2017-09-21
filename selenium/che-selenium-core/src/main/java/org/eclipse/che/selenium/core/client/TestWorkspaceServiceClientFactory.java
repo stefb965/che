@@ -10,7 +10,9 @@
  */
 package org.eclipse.che.selenium.core.client;
 
+import org.eclipse.che.selenium.core.user.TestUser;
+
 /** @author Dmytro Nochevnov */
 public interface TestWorkspaceServiceClientFactory {
-  TestWorkspaceServiceClient create(String authToken);
+  TestWorkspaceServiceClient create(TestUser testUser);
 }
