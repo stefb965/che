@@ -14,8 +14,8 @@ import com.google.inject.Injector;
 import com.google.inject.MembersInjector;
 import com.google.inject.Provider;
 import java.lang.reflect.Field;
+import org.eclipse.che.selenium.core.client.CheTestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
-import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
 
 /**
@@ -43,7 +43,7 @@ public class TestUserInjector<T> implements MembersInjector<T> {
           t,
           new TestUserImpl(
               injectTestUser.value(),
-              injector.getInstance(TestUserServiceClient.class),
+              injector.getInstance(CheTestUserServiceClient.class),
               injector.getInstance(TestWorkspaceServiceClient.class),
               injector.getInstance(TestAuthServiceClient.class)));
     } catch (Exception e) {

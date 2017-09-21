@@ -12,8 +12,9 @@ package org.eclipse.che.selenium.core.user;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import org.eclipse.che.selenium.core.client.CheTestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
-import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
 
 /**
@@ -27,21 +28,22 @@ import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
 @Singleton
 public class DefaultTestUser implements TestUser {
 
+  private static final String CHE_USER_NAME = "che.user.name";
+  private static final String CHE_USER_PASSWORD = "che.user.password";
+
   private final TestUser testUser;
 
   @Inject
   public DefaultTestUser(
-      TestUserServiceClient testUserServiceClient,
+      CheTestUserServiceClient testUserServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
-      TestAuthServiceClient authServiceClient)
+      TestAuthServiceClient authServiceClient,
+      @Named(CHE_USER_NAME) String name,
+      @Named(CHE_USER_PASSWORD) String password)
       throws Exception {
     this.testUser =
         new TestUserImpl(
-            "default@some.com",
-            "default",
-            testUserServiceClient,
-            workspaceServiceClient,
-            authServiceClient);
+            name, password, testUserServiceClient, workspaceServiceClient, authServiceClient);
   }
 
   @Override

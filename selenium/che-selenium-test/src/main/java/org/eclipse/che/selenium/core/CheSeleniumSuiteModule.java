@@ -23,6 +23,7 @@ import org.eclipse.che.selenium.core.action.GenericActionsFactory;
 import org.eclipse.che.selenium.core.action.MacOSActionsFactory;
 import org.eclipse.che.selenium.core.client.CheTestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.CheTestMachineServiceClient;
+import org.eclipse.che.selenium.core.client.KeycloakTestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestMachineServiceClient;
 import org.eclipse.che.selenium.core.configuration.SeleniumTestConfiguration;
@@ -63,6 +64,8 @@ import org.eclipse.che.selenium.core.workspace.WorkspaceTemplate;
  */
 public class CheSeleniumSuiteModule extends AbstractModule {
 
+  private static final String CHE_MULTIUSER = "che.multiuser";
+
   @Override
   public void configure() {
     TestConfiguration config = new SeleniumTestConfiguration();
@@ -90,6 +93,17 @@ public class CheSeleniumSuiteModule extends AbstractModule {
     bind(TestUser.class).to(TestUserImpl.class);
     bind(TestWorkspaceProvider.class).to(TestWorkspaceProviderImpl.class).asEagerSingleton();
   }
+
+  @Provides
+  public TestUser getTestAuthServiceClient(
+          @Named(CHE_MULTIUSER) boolean isMultiuser) {
+      if (isMultiuser) {
+          return new TestUserImpl();
+        } else {
+          return new CheTestAuthServiceClient();
+        }
+    }
+
 
   @Provides
   public TestWorkspace getWorkspace(

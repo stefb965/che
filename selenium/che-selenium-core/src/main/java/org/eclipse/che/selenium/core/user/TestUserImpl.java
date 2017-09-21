@@ -17,8 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PreDestroy;
 import org.eclipse.che.commons.lang.NameGenerator;
+import org.eclipse.che.selenium.core.client.CheTestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
-import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,12 +33,12 @@ public class TestUserImpl implements TestUser {
   private final String id;
   private final String authToken;
 
-  private final TestUserServiceClient userServiceClient;
+  private final CheTestUserServiceClient userServiceClient;
   private final TestWorkspaceServiceClient workspaceServiceClient;
 
   @Inject
   public TestUserImpl(
-      TestUserServiceClient userServiceClient,
+      CheTestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient)
       throws Exception {
@@ -52,7 +52,7 @@ public class TestUserImpl implements TestUser {
   /** To instantiate user with specific e-mail. */
   public TestUserImpl(
       String email,
-      TestUserServiceClient userServiceClient,
+      CheTestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient)
       throws Exception {
@@ -68,7 +68,7 @@ public class TestUserImpl implements TestUser {
   public TestUserImpl(
       String email,
       String password,
-      TestUserServiceClient userServiceClient,
+      CheTestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient)
       throws Exception {
@@ -79,7 +79,7 @@ public class TestUserImpl implements TestUser {
     this.password = password;
     this.name = email.split("@")[0];
 
-    //    this.id = userServiceClient.create(email, password).getId();
+        this.id = userServiceClient.create(email, password).getId();
     this.id = "id";
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
 

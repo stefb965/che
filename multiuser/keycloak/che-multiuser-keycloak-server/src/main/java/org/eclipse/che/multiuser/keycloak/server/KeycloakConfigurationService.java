@@ -19,6 +19,7 @@ import static org.eclipse.che.multiuser.keycloak.shared.KeycloakConstants.OSO_EN
 import static org.eclipse.che.multiuser.keycloak.shared.KeycloakConstants.PASSWORD_ENDPOINT_SETTING;
 import static org.eclipse.che.multiuser.keycloak.shared.KeycloakConstants.PROFILE_ENDPOINT_SETTING;
 import static org.eclipse.che.multiuser.keycloak.shared.KeycloakConstants.REALM_SETTING;
+import static org.eclipse.che.multiuser.keycloak.shared.KeycloakConstants.TOKEN_ENDPOINT_SETTING;
 
 import com.google.common.collect.Maps;
 import java.util.Collections;
@@ -55,6 +56,8 @@ public class KeycloakConfigurationService extends Service {
     settings.put(REALM_SETTING, realm);
     settings.put(PROFILE_ENDPOINT_SETTING, serverURL + "/realms/" + realm + "/account");
     settings.put(PASSWORD_ENDPOINT_SETTING, serverURL + "/realms/" + realm + "/account/password");
+    settings.put(
+        TOKEN_ENDPOINT_SETTING, serverURL + "/realms/" + realm + "/protocol/openid-connect/token");
     settings.put(
         LOGOUT_ENDPOINT_SETTING,
         serverURL + "/realms/" + realm + "/protocol/openid-connect/logout");
