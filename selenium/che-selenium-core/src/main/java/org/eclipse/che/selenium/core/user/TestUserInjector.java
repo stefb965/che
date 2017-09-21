@@ -14,9 +14,9 @@ import com.google.inject.Injector;
 import com.google.inject.MembersInjector;
 import com.google.inject.Provider;
 import java.lang.reflect.Field;
-import org.eclipse.che.selenium.core.client.CheTestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
+import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
 
 /**
  * Injector for custom annotation {@link InjectTestUser}.

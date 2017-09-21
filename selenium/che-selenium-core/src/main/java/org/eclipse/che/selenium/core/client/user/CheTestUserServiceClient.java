@@ -8,7 +8,7 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.selenium.core.client;
+package org.eclipse.che.selenium.core.client.user;
 
 import static org.eclipse.che.dto.server.DtoFactory.newDto;
 
@@ -19,11 +19,11 @@ import org.eclipse.che.api.core.model.user.User;
 import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
 import org.eclipse.che.api.core.rest.HttpJsonResponse;
 import org.eclipse.che.api.user.shared.dto.UserDto;
+import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
 import org.eclipse.che.selenium.core.requestfactory.TestAdminHttpJsonRequestFactory;
 
 /** @author Musienko Maxim */
-@Singleton
 public class CheTestUserServiceClient implements TestUserServiceClient {
   private final String apiEndpoint;
   private final HttpJsonRequestFactory requestFactory;

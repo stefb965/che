@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PreDestroy;
 import org.eclipse.che.commons.lang.NameGenerator;
-import org.eclipse.che.selenium.core.client.CheTestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
+import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,9 +78,7 @@ public class TestUserImpl implements TestUser {
     this.email = email;
     this.password = password;
     this.name = email.split("@")[0];
-
-        this.id = userServiceClient.create(email, password).getId();
-    this.id = "id";
+    this.id ="admin";// userServiceClient.create(name, email, password).getId();
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
 
     this.authToken = authServiceClient.login(getName(), getPassword());

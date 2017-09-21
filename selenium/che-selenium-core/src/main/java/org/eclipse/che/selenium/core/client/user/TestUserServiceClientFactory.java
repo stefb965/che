@@ -8,7 +8,11 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.selenium.core.client;
+package org.eclipse.che.selenium.core.client.user;
 
-/** @author Mihail Kuznyetsov */
-public interface TestUserServiceClient {}
+/** @author Anton Korneta */
+public interface TestUserServiceClientFactory {
+  CheTestUserServiceClient create();
+
+  KeycloakTestUserServiceClient create(boolean multiuser);
+}

@@ -8,20 +8,20 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.selenium.core.client;
+package org.eclipse.che.selenium.core.client.user;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.assistedinject.Assisted;
 import java.net.URLEncoder;
 import org.eclipse.che.api.core.model.user.User;
 import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
 import org.eclipse.che.api.core.rest.HttpJsonResponse;
 import org.eclipse.che.api.user.shared.dto.UserDto;
+import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
-import org.eclipse.che.selenium.core.requestfactory.TestAdminHttpJsonRequestFactory;
 
 /** @author Musienko Maxim */
-@Singleton
 public class KeycloakTestUserServiceClient implements TestUserServiceClient {
   private final String apiEndpoint;
   private final HttpJsonRequestFactory requestFactory;
@@ -29,7 +29,8 @@ public class KeycloakTestUserServiceClient implements TestUserServiceClient {
   @Inject
   public KeycloakTestUserServiceClient(
       TestApiEndpointUrlProvider apiEndpointProvider,
-      TestAdminHttpJsonRequestFactory requestFactory) {
+      HttpJsonRequestFactory requestFactory,
+      @Assisted boolean multiuser) {
     this.apiEndpoint = apiEndpointProvider.get().toString();
     this.requestFactory = requestFactory;
   }
@@ -41,8 +42,7 @@ public class KeycloakTestUserServiceClient implements TestUserServiceClient {
     return response.asDto(UserDto.class);
   }
 
-  public void deleteByEmail(String email) throws Exception {
-  }
+  public void deleteByEmail(String email) throws Exception {}
 
   public User create(String name, String email, String password) throws Exception {
     // do nothing, user is expected to

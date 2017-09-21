@@ -12,10 +12,9 @@ package org.eclipse.che.selenium.core.user;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.name.Named;
-import org.eclipse.che.selenium.core.client.CheTestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
+import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
 
 /**
  * Default {@link TestUser} that will be created before all tests and will be deleted after them.
@@ -37,13 +36,11 @@ public class DefaultTestUser implements TestUser {
   public DefaultTestUser(
       CheTestUserServiceClient testUserServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
-      TestAuthServiceClient authServiceClient,
-      @Named(CHE_USER_NAME) String name,
-      @Named(CHE_USER_PASSWORD) String password)
+      TestAuthServiceClient authServiceClient)
       throws Exception {
     this.testUser =
         new TestUserImpl(
-            name, password, testUserServiceClient, workspaceServiceClient, authServiceClient);
+            "tony", "passwprd", testUserServiceClient, workspaceServiceClient, authServiceClient);
   }
 
   @Override

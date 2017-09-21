@@ -10,10 +10,7 @@
  */
 package org.eclipse.che.selenium.core.client;
 
-/**
- *
- * @author Mihail Kuznyetsov
- */
+/** @author Mihail Kuznyetsov */
 public class KeycloakToken {
 
   String accessToken;

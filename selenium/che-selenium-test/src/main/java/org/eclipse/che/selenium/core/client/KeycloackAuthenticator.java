@@ -10,8 +10,6 @@
  */
 package org.eclipse.che.selenium.core.client;
 
-import static org.eclipse.che.commons.json.JsonNameConventions.CAMEL_UNDERSCORE;
-
 import com.google.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -28,19 +26,14 @@ import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author Mihail Kuznyetsov
- */
+/** @author Mihail Kuznyetsov */
 public class KeycloackAuthenticator {
   private static final Logger LOG = LoggerFactory.getLogger(KeycloackAuthenticator.class);
-  @Inject
-  HttpJsonRequestFactory requestFactory;
+  @Inject HttpJsonRequestFactory requestFactory;
 
   private final String cheApiEndpoint;
 
   private final String keycloakApiEndpoint;
-
-  private final long tokenExpriationTime;
 
   private KeycloakToken keycloakToken;
 
@@ -48,25 +41,20 @@ public class KeycloackAuthenticator {
   public KeycloackAuthenticator(TestApiEndpointUrlProvider cheApiEndpointProvider) {
     this.cheApiEndpoint = cheApiEndpointProvider.get().toString();
     this.keycloakApiEndpoint = retrieveKeycloakConfigurationFromChe();
-
   }
 
   public void checkAndGetAccessToken() {
-    if (keycloakToken.getExpirationTime() > 0) {
-
-    }
+    if (keycloakToken.getExpirationTime() > 0) {}
   }
-
 
   private String retrieveKeycloakConfigurationFromChe() {
     try {
       HttpJsonResponse response =
-          requestFactory
-              .fromUrl(cheApiEndpoint + "keycloak/settings/")
-              .useGetMethod()
-              .request();
+          requestFactory.fromUrl(cheApiEndpoint + "keycloak/settings/").useGetMethod().request();
 
-      return JsonHelper.parseJson(response.asString()).getElement("che.keycloak.token.endpoint").getStringValue();
+      return JsonHelper.parseJson(response.asString())
+          .getElement("che.keycloak.token.endpoint")
+          .getStringValue();
     } catch (Exception e) {
       throw new RuntimeException("Error during retrieving Che Keycloak configuration: ", e);
     }
@@ -89,9 +77,9 @@ public class KeycloackAuthenticator {
       OutputStream output = http.getOutputStream();
       output.write(
           ("grant_type=password&client_id=che-public&username="
-              + username
-              + "&password="
-              + password)
+                  + username
+                  + "&password="
+                  + password)
               .getBytes("UTF-8"));
       if (http.getResponseCode() != 200) {
         throw new RuntimeException(
@@ -111,11 +99,7 @@ public class KeycloackAuthenticator {
       while ((line = br.readLine()) != null) {
         jsonStringWithToken.append(line);
       }
-      token =
-          JsonHelper.fromJson(
-              jsonStringWithToken.toString(),
-              KeycloakToken.class,
-              null);
+      token = JsonHelper.fromJson(jsonStringWithToken.toString(), KeycloakToken.class, null);
 
     } catch (IOException | JsonParseException e) {
       LOG.error(e.getLocalizedMessage(), e);

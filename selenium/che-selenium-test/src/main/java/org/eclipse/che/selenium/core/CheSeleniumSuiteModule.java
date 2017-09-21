@@ -15,6 +15,7 @@ import static org.eclipse.che.selenium.core.utils.PlatformUtils.isMac;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 import com.google.inject.name.Names;
 import javax.inject.Named;
 import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
@@ -23,9 +24,10 @@ import org.eclipse.che.selenium.core.action.GenericActionsFactory;
 import org.eclipse.che.selenium.core.action.MacOSActionsFactory;
 import org.eclipse.che.selenium.core.client.CheTestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.CheTestMachineServiceClient;
-import org.eclipse.che.selenium.core.client.KeycloakTestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestMachineServiceClient;
+import org.eclipse.che.selenium.core.client.TestUserServiceClient;
+import org.eclipse.che.selenium.core.client.user.TestUserServiceClientFactory;
 import org.eclipse.che.selenium.core.configuration.SeleniumTestConfiguration;
 import org.eclipse.che.selenium.core.configuration.TestConfiguration;
 import org.eclipse.che.selenium.core.provider.CheTestApiEndpointUrlProvider;
@@ -64,8 +66,6 @@ import org.eclipse.che.selenium.core.workspace.WorkspaceTemplate;
  */
 public class CheSeleniumSuiteModule extends AbstractModule {
 
-  private static final String CHE_MULTIUSER = "che.multiuser";
-
   @Override
   public void configure() {
     TestConfiguration config = new SeleniumTestConfiguration();
@@ -89,21 +89,13 @@ public class CheSeleniumSuiteModule extends AbstractModule {
 
     bind(TestAuthServiceClient.class).to(CheTestAuthServiceClient.class);
     bind(TestMachineServiceClient.class).to(CheTestMachineServiceClient.class);
-
     bind(TestUser.class).to(TestUserImpl.class);
     bind(TestWorkspaceProvider.class).to(TestWorkspaceProviderImpl.class).asEagerSingleton();
+    install(new FactoryModuleBuilder().build(TestUserServiceClientFactory.class));
+    bind(TestUserServiceClient.class).toProvider(TestUserServiceClientProvider.class);
+    bind(String.class).annotatedWith(Names.named("che.user.name")).toInstance("tony");
+    bind(String.class).annotatedWith(Names.named("che.user.password")).toInstance("password");
   }
-
-  @Provides
-  public TestUser getTestAuthServiceClient(
-          @Named(CHE_MULTIUSER) boolean isMultiuser) {
-      if (isMultiuser) {
-          return new TestUserImpl();
-        } else {
-          return new CheTestAuthServiceClient();
-        }
-    }
-
 
   @Provides
   public TestWorkspace getWorkspace(
