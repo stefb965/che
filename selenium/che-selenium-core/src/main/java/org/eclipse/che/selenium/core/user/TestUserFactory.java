@@ -8,11 +8,13 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.selenium.core.client.user;
+package org.eclipse.che.selenium.core.user;
+
+import com.google.inject.assistedinject.Assisted;
 
 /** @author Anton Korneta */
-public interface TestUserServiceClientFactory {
-  CheTestUserServiceClient create();
+public interface TestUserFactory {
+  TestUserImpl create(@Assisted("email") String email);
 
-  KeycloakTestUserServiceClient create(boolean multiuser);
+  TestUserImpl create(@Assisted("email") String email, @Assisted("password") String password);
 }

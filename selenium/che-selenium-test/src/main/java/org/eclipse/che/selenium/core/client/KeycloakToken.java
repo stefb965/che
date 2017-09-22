@@ -10,14 +10,20 @@
  */
 package org.eclipse.che.selenium.core.client;
 
+import com.google.gson.annotations.SerializedName;
+
 /** @author Mihail Kuznyetsov */
 public class KeycloakToken {
-
+  @SerializedName("access_token")
   String accessToken;
 
+  @SerializedName("expires_in")
   long expirationTime;
 
+  @SerializedName("refresh_token")
   String refreshToken;
+
+  public KeycloakToken() {}
 
   public String getAccessToken() {
     return accessToken;

@@ -12,9 +12,7 @@ package org.eclipse.che.selenium.core.user;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
-import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
-import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
+import com.google.inject.name.Named;
 
 /**
  * Default {@link TestUser} that will be created before all tests and will be deleted after them.
@@ -27,49 +25,42 @@ import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
 @Singleton
 public class DefaultTestUser implements TestUser {
 
-  private static final String CHE_USER_NAME = "che.user.name";
-  private static final String CHE_USER_PASSWORD = "che.user.password";
-
-  private final TestUser testUser;
+  private final TestUser delegate;
 
   @Inject
   public DefaultTestUser(
-      CheTestUserServiceClient testUserServiceClient,
-      TestWorkspaceServiceClient workspaceServiceClient,
-      TestAuthServiceClient authServiceClient)
+      TestUserFactory userFactory,
+      @Named("che.user.email") String email,
+      @Named("che.user.password") String password)
       throws Exception {
-    this.testUser =
-        new TestUserImpl(
-            "tony", "passwprd", testUserServiceClient, workspaceServiceClient, authServiceClient);
+    this.delegate = userFactory.create(email, password);
   }
 
   @Override
   public String getEmail() {
-    return testUser.getEmail();
+    return delegate.getEmail();
   }
 
   @Override
   public String getPassword() {
-    return testUser.getPassword();
+    return delegate.getPassword();
   }
 
   @Override
   public String getAuthToken() {
-    return testUser.getAuthToken();
+    return delegate.getAuthToken();
   }
 
   @Override
   public String getName() {
-    return testUser.getName();
+    return delegate.getName();
   }
 
   @Override
   public String getId() {
-    return testUser.getId();
+    return delegate.getId();
   }
 
   @Override
-  public void delete() {
-    testUser.delete();
-  }
+  public void delete() {}
 }

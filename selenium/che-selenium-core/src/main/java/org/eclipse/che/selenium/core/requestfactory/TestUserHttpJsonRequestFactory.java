@@ -10,20 +10,36 @@
  */
 package org.eclipse.che.selenium.core.requestfactory;
 
-import java.util.Objects;
-import javax.validation.constraints.NotNull;
+import static java.lang.String.format;
+
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
+import com.google.inject.name.Named;
+import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 
 /** @author Dmytro Nochevnov */
+@Singleton
 public class TestUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
 
-  private final String authToken;
+  private final String username;
+  private final String password;
+  private final TestAuthServiceClient authServiceClient;
 
-  public TestUserHttpJsonRequestFactory(@NotNull String authToken) {
-    Objects.requireNonNull(authToken);
-    this.authToken = authToken;
+  @Inject
+  public TestUserHttpJsonRequestFactory(
+      @Named("che.user.email") String username,
+      @Named("che.user.password") String password,
+      TestAuthServiceClient authServiceClient) {
+    this.username = username;
+    this.password = password;
+    this.authServiceClient = authServiceClient;
   }
 
   protected String getAuthToken() {
-    return this.authToken;
+    try {
+      return authServiceClient.login(username, password);
+    } catch (Exception ex) {
+      throw new RuntimeException(format("Failed to access get token for user '%s'", username));
+    }
   }
 }

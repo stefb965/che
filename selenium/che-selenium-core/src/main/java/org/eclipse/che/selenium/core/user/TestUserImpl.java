@@ -13,6 +13,8 @@ package org.eclipse.che.selenium.core.user;
 import static java.lang.String.format;
 
 import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.assistedinject.AssistedInject;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PreDestroy;
@@ -43,45 +45,45 @@ public class TestUserImpl implements TestUser {
       TestAuthServiceClient authServiceClient)
       throws Exception {
     this(
-        NameGenerator.generate("user", 6) + "@some.mail",
         userServiceClient,
         workspaceServiceClient,
-        authServiceClient);
+        authServiceClient,
+        NameGenerator.generate("user", 6) + "@some.mail");
   }
 
   /** To instantiate user with specific e-mail. */
+  @AssistedInject
   public TestUserImpl(
-      String email,
       CheTestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
-      TestAuthServiceClient authServiceClient)
+      TestAuthServiceClient authServiceClient,
+      @Assisted("email") String email)
       throws Exception {
     this(
-        email,
-        NameGenerator.generate("Pwd1", 6),
         userServiceClient,
         workspaceServiceClient,
-        authServiceClient);
+        authServiceClient,
+        email,
+        NameGenerator.generate("Pwd1", 6));
   }
 
   /** To instantiate user with specific e-mail. */
+  @AssistedInject
   public TestUserImpl(
-      String email,
-      String password,
       CheTestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
-      TestAuthServiceClient authServiceClient)
+      TestAuthServiceClient authServiceClient,
+      @Assisted("email") String email,
+      @Assisted("password") String password)
       throws Exception {
     this.userServiceClient = userServiceClient;
     this.workspaceServiceClient = workspaceServiceClient;
-
     this.email = email;
     this.password = password;
     this.name = email.split("@")[0];
-    this.id ="admin";// userServiceClient.create(name, email, password).getId();
+    this.authToken = authServiceClient.login(name, password);
+    this.id = userServiceClient.getByEmail(email).getId();
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
-
-    this.authToken = authServiceClient.login(getName(), getPassword());
   }
 
   @Override
@@ -128,12 +130,12 @@ public class TestUserImpl implements TestUser {
       }
     }
 
-    //    try {
-    //      userServiceClient.deleteByEmail(email);
-    //      LOG.info("User name='{}', id='{}' removed", name, id);
-    //    } catch (Exception e) {
-    //      LOG.error(format("Failed to remove user email='%s', id='%s'", email, id), e);
-    //    }
+    try {
+      userServiceClient.deleteByEmail(email);
+      LOG.info("User name='{}', id='{}' removed", name, id);
+    } catch (Exception e) {
+      LOG.error(format("Failed to remove user email='%s', id='%s'", email, id), e);
+    }
   }
 
   @Override

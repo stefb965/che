@@ -10,14 +10,9 @@
  */
 package org.eclipse.che.selenium.core.client.user;
 
-import static org.eclipse.che.dto.server.DtoFactory.newDto;
-
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 import java.net.URLEncoder;
 import org.eclipse.che.api.core.model.user.User;
-import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
-import org.eclipse.che.api.core.rest.HttpJsonResponse;
 import org.eclipse.che.api.user.shared.dto.UserDto;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
@@ -26,45 +21,30 @@ import org.eclipse.che.selenium.core.requestfactory.TestAdminHttpJsonRequestFact
 /** @author Musienko Maxim */
 public class CheTestUserServiceClient implements TestUserServiceClient {
   private final String apiEndpoint;
-  private final HttpJsonRequestFactory requestFactory;
+  private final TestAdminHttpJsonRequestFactory adminRequestFactory;
 
   @Inject
   public CheTestUserServiceClient(
       TestApiEndpointUrlProvider apiEndpointProvider,
       TestAdminHttpJsonRequestFactory requestFactory) {
     this.apiEndpoint = apiEndpointProvider.get().toString();
-    this.requestFactory = requestFactory;
+    this.adminRequestFactory = requestFactory;
   }
 
   public User getByEmail(String email) throws Exception {
-    String url = apiEndpoint + "user/find?email=" + URLEncoder.encode(email, "UTF-8");
-    HttpJsonResponse response = requestFactory.fromUrl(url).useGetMethod().request();
-
-    return response.asDto(UserDto.class);
+    return adminRequestFactory
+        .fromUrl(apiEndpoint + "user/find")
+        .useGetMethod()
+        .addQueryParam("email", URLEncoder.encode(email, "UTF-8"))
+        .request()
+        .asDto(UserDto.class);
   }
 
   public void deleteByEmail(String email) throws Exception {
-    String url = apiEndpoint + "user/" + getByEmail(email).getId();
-    requestFactory.fromUrl(url).useDeleteMethod().request();
+    throw new RuntimeException("Operation is not supported");
   }
 
   public User create(String name, String email, String password) throws Exception {
-    String url = apiEndpoint + "user";
-    return requestFactory
-        .fromUrl(url)
-        .usePostMethod()
-        .setBody(newDto(UserDto.class).withName(name).withPassword(password).withEmail(email))
-        .request()
-        .asDto(UserDto.class);
-  }
-
-  public UserDto getUser(String auth) throws Exception {
-    String url = apiEndpoint + "user";
-    return requestFactory
-        .fromUrl(url)
-        .useGetMethod()
-        .setAuthorizationHeader(auth)
-        .request()
-        .asDto(UserDto.class);
+    throw new RuntimeException("Operation is not supported");
   }
 }

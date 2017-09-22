@@ -10,21 +10,32 @@
  */
 package org.eclipse.che.selenium.core.requestfactory;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import org.eclipse.che.selenium.core.user.AdminTestUser;
+import com.google.inject.name.Named;
+import javax.inject.Inject;
+import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 
 /** @author Dmytro Nochevnov */
 public class TestAdminHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
 
-  private Provider<AdminTestUser> adminProvider;
+  private final String adminName;
+  private final String adminPassword;
+  private final TestAuthServiceClient authServiceClient;
 
   @Inject
-  public TestAdminHttpJsonRequestFactory(Provider<AdminTestUser> adminProvider) {
-    this.adminProvider = adminProvider;
+  public TestAdminHttpJsonRequestFactory(
+      TestAuthServiceClient authServiceClient,
+      @Named("che.admin_user.email") String adminName,
+      @Named("che.admin_user.password") String adminPassword) {
+    this.adminName = adminName;
+    this.adminPassword = adminPassword;
+    this.authServiceClient = authServiceClient;
   }
 
   protected String getAuthToken() {
-    return adminProvider.get().getAuthToken();
+    try {
+      return authServiceClient.login(adminName, adminPassword);
+    } catch (Exception ex) {
+      throw new RuntimeException("Failed to get access token for admin user");
+    }
   }
 }

@@ -12,48 +12,46 @@ package org.eclipse.che.selenium.core.user;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
+import com.google.inject.name.Named;
 
 /** @author Anatolii Bazko */
 @Singleton
 public class CheAdminTestUser implements AdminTestUser {
 
-  private TestAuthServiceClient authServiceClient;
+  private final TestUser delegate;
 
   @Inject
-  public CheAdminTestUser(TestAuthServiceClient authServiceClient) throws Exception {
-    this.authServiceClient = authServiceClient;
+  public CheAdminTestUser(
+      TestUserFactory userFactory,
+      @Named("che.admin_user.email") String email,
+      @Named("che.admin_user.password") String password)
+      throws Exception {
+    this.delegate = userFactory.create(email, password);
   }
 
   @Override
   public String getEmail() {
-    return "admin@email";
+    return delegate.getEmail();
   }
 
   @Override
   public String getPassword() {
-    //    return "password";
-    return "admin";
+    return delegate.getPassword();
   }
 
   @Override
   public String getAuthToken() {
-    //    return "auth";
-    try {
-      return authServiceClient.login(getName(), getPassword());
-    } catch (Exception e) {
-      throw new RuntimeException(e.getMessage(), e);
-    }
+    return delegate.getAuthToken();
   }
 
   @Override
   public String getName() {
-    return "admin";
+    return delegate.getName();
   }
 
   @Override
   public String getId() {
-    return "id";
+    return delegate.getId();
   }
 
   @Override
