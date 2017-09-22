@@ -16,11 +16,11 @@
     <parent>
         <artifactId>maven-depmgt-pom</artifactId>
         <groupId>org.eclipse.che.depmgt</groupId>
-        <version>5.18.0-SNAPSHOT</version>
+        <version>5.19.0-SNAPSHOT</version>
     </parent>
     <groupId>org.eclipse.che</groupId>
     <artifactId>che-parent</artifactId>
-    <version>5.18.0-SNAPSHOT</version>
+    <version>5.19.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>Che Parent</name>
     <modules>
@@ -45,9 +45,10 @@
         <url>https://github.com/eclipse/che</url>
     </scm>
     <properties>
-        <che.docs.version>5.18.0-SNAPSHOT</che.docs.version>
-        <che.lib.version>5.18.0-SNAPSHOT</che.lib.version>
-        <che.version>5.18.0-SNAPSHOT</che.version>
+        <che.docs.version>5.19.0-SNAPSHOT</che.docs.version>
+        <che.lib.version>5.19.0-SNAPSHOT</che.lib.version>
+        <che.version>5.19.0-SNAPSHOT</che.version>
+        <com.dumbster.version>1.7.1</com.dumbster.version>
         <org.keycloak.version>3.2.0.Final</org.keycloak.version>
         <specification.version>1.0-beta2</specification.version>
     </properties>
@@ -648,6 +649,22 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-api-organization</artifactId>
+                <version>${che.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-api-organization</artifactId>
+                <version>${che.version}</version>
+                <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-api-organization-shared</artifactId>
+                <version>${che.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
                 <artifactId>che-multiuser-api-permission</artifactId>
                 <version>${che.version}</version>
             </dependency>
@@ -660,6 +677,22 @@
             <dependency>
                 <groupId>org.eclipse.che.multiuser</groupId>
                 <artifactId>che-multiuser-api-permission-shared</artifactId>
+                <version>${che.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-api-resource</artifactId>
+                <version>${che.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-api-resource</artifactId>
+                <version>${che.version}</version>
+                <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-api-resource-shared</artifactId>
                 <version>${che.version}</version>
             </dependency>
             <dependency>
@@ -709,11 +742,6 @@
             </dependency>
             <dependency>
                 <groupId>org.eclipse.che.multiuser</groupId>
-                <artifactId>che-multiuser-permission-account</artifactId>
-                <version>${che.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.eclipse.che.multiuser</groupId>
                 <artifactId>che-multiuser-permission-factory</artifactId>
                 <version>${che.version}</version>
             </dependency>
@@ -727,6 +755,11 @@
                 <artifactId>che-multiuser-permission-machine</artifactId>
                 <version>${che.version}</version>
                 <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-permission-resource</artifactId>
+                <version>${che.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.che.multiuser</groupId>
@@ -748,6 +781,16 @@
                 <artifactId>che-multiuser-permission-workspace</artifactId>
                 <version>${che.version}</version>
                 <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-personal-account</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.eclipse.che.multiuser</groupId>
+                <artifactId>che-multiuser-sql-schema</artifactId>
+                <version>${che.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.che.plugin</groupId>
@@ -1384,6 +1427,12 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${jdbc.postgresql-driver.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.kirviq</groupId>
+                <artifactId>dumbster</artifactId>
+                <version>${com.dumbster.version}</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.eclipse.che.core</groupId>
