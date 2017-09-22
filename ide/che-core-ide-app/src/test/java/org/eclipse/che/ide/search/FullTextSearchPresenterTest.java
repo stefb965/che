@@ -10,6 +10,7 @@
  */
 package org.eclipse.che.ide.search;
 
+import static org.mockito.ArgumentMatchers.nullable;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
@@ -79,8 +80,9 @@ public class FullTextSearchPresenterTest {
   public void searchShouldBeSuccessfullyFinished() throws Exception {
     when(view.getPathToSearch()).thenReturn("/search");
     when(appContext.getWorkspaceRoot()).thenReturn(workspaceRoot);
-    when(workspaceRoot.getContainer(any(Path.class))).thenReturn(optionalContainerPromise);
-    when(searchContainer.search(anyString(), anyString())).thenReturn(searchResultPromise);
+    when(workspaceRoot.getContainer(nullable(Path.class))).thenReturn(optionalContainerPromise);
+    when(searchContainer.search(nullable(String.class), nullable(String.class)))
+        .thenReturn(searchResultPromise);
 
     fullTextSearchPresenter.search(SEARCHED_TEXT);
 
@@ -100,8 +102,9 @@ public class FullTextSearchPresenterTest {
     when(view.getPathToSearch()).thenReturn("/search");
     when(view.isWholeWordsOnly()).thenReturn(false);
     when(appContext.getWorkspaceRoot()).thenReturn(workspaceRoot);
-    when(workspaceRoot.getContainer(any(Path.class))).thenReturn(optionalContainerPromise);
-    when(searchContainer.search(anyString(), anyString())).thenReturn(searchResultPromise);
+    when(workspaceRoot.getContainer(nullable(Path.class))).thenReturn(optionalContainerPromise);
+    when(searchContainer.search(nullable(String.class), nullable(String.class)))
+        .thenReturn(searchResultPromise);
 
     final String search = NameGenerator.generate("test", 10);
     fullTextSearchPresenter.search(search);
@@ -112,9 +115,9 @@ public class FullTextSearchPresenterTest {
     verify(searchResultPromise).then(searchResultCaptor.capture());
     searchResultCaptor.getValue().apply(Collections.emptyList());
 
-    verify(searchContainer).search(anyString(), eq("*" + search + "*"));
+    verify(searchContainer).search(nullable(String.class), eq("*" + search + "*"));
     verify(view).isWholeWordsOnly();
-    verify(view, never()).showErrorMessage(anyString());
+    verify(view, never()).showErrorMessage(nullable(String.class));
     verify(view).close();
     verify(findResultPresenter).handleResponse(eq(Collections.emptyList()), eq(search));
   }
@@ -124,8 +127,9 @@ public class FullTextSearchPresenterTest {
     when(view.getPathToSearch()).thenReturn("/search");
     when(view.isWholeWordsOnly()).thenReturn(true);
     when(appContext.getWorkspaceRoot()).thenReturn(workspaceRoot);
-    when(workspaceRoot.getContainer(any(Path.class))).thenReturn(optionalContainerPromise);
-    when(searchContainer.search(anyString(), anyString())).thenReturn(searchResultPromise);
+    when(workspaceRoot.getContainer(nullable(Path.class))).thenReturn(optionalContainerPromise);
+    when(searchContainer.search(nullable(String.class), nullable(String.class)))
+        .thenReturn(searchResultPromise);
 
     final String search = NameGenerator.generate("test", 10);
     fullTextSearchPresenter.search(search);
@@ -136,7 +140,7 @@ public class FullTextSearchPresenterTest {
     verify(searchResultPromise).then(searchResultCaptor.capture());
     searchResultCaptor.getValue().apply(Collections.emptyList());
 
-    verify(searchContainer).search(anyString(), eq(search));
+    verify(searchContainer).search(nullable(String.class), eq(search));
     verify(view).isWholeWordsOnly();
     verify(view, never()).showErrorMessage(anyString());
     verify(view).close();
@@ -147,7 +151,7 @@ public class FullTextSearchPresenterTest {
   public void searchHasDoneWithSomeError() throws Exception {
     when(view.getPathToSearch()).thenReturn("/search");
     when(appContext.getWorkspaceRoot()).thenReturn(workspaceRoot);
-    when(workspaceRoot.getContainer(any(Path.class))).thenReturn(optionalContainerPromise);
+    when(workspaceRoot.getContainer(nullable(Path.class))).thenReturn(optionalContainerPromise);
 
     fullTextSearchPresenter.search(SEARCHED_TEXT);
 
@@ -166,8 +170,9 @@ public class FullTextSearchPresenterTest {
 
     when(view.getPathToSearch()).thenReturn("/search");
     when(appContext.getWorkspaceRoot()).thenReturn(workspaceRoot);
-    when(workspaceRoot.getContainer(any(Path.class))).thenReturn(optionalContainerPromise);
-    when(searchContainer.search(anyString(), anyString())).thenReturn(searchResultPromise);
+    when(workspaceRoot.getContainer(nullable(Path.class))).thenReturn(optionalContainerPromise);
+    when(searchContainer.search(nullable(String.class), nullable(String.class)))
+        .thenReturn(searchResultPromise);
     List<SearchResult> result = Collections.emptyList();
 
     fullTextSearchPresenter.onEnterClicked();
