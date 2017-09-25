@@ -12,7 +12,6 @@ package org.eclipse.che.selenium.core.user;
 
 import static java.lang.String.format;
 
-import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class TestUserImpl implements TestUser {
   private final CheTestUserServiceClient userServiceClient;
   private final TestWorkspaceServiceClient workspaceServiceClient;
 
-  @Inject
+  @AssistedInject
   public TestUserImpl(
       CheTestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
@@ -67,7 +66,7 @@ public class TestUserImpl implements TestUser {
         NameGenerator.generate("Pwd1", 6));
   }
 
-  /** To instantiate user with specific e-mail. */
+  /** To instantiate user with specific e-mail and password. */
   @AssistedInject
   public TestUserImpl(
       CheTestUserServiceClient userServiceClient,
@@ -82,7 +81,7 @@ public class TestUserImpl implements TestUser {
     this.password = password;
     this.name = email.split("@")[0];
     this.authToken = authServiceClient.login(name, password);
-    this.id = userServiceClient.getByEmail(email).getId();
+    this.id = userServiceClient.findByEmail(email).getId();
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
   }
 
@@ -131,7 +130,7 @@ public class TestUserImpl implements TestUser {
     }
 
     try {
-      userServiceClient.deleteByEmail(email);
+      userServiceClient.removeByEmail(email);
       LOG.info("User name='{}', id='{}' removed", name, id);
     } catch (Exception e) {
       LOG.error(format("Failed to remove user email='%s', id='%s'", email, id), e);

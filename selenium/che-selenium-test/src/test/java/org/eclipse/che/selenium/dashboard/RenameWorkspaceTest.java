@@ -13,7 +13,7 @@ package org.eclipse.che.selenium.dashboard;
 import com.google.inject.Inject;
 import org.eclipse.che.commons.lang.NameGenerator;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
-import org.eclipse.che.selenium.core.user.DefaultTestUser;
+import org.eclipse.che.selenium.core.user.TestUser;
 import org.eclipse.che.selenium.core.workspace.TestWorkspace;
 import org.eclipse.che.selenium.pageobject.dashboard.Dashboard;
 import org.eclipse.che.selenium.pageobject.dashboard.DashboardWorkspace;
@@ -28,7 +28,7 @@ public class RenameWorkspaceTest {
   @Inject private Dashboard dashboard;
   @Inject private DashboardWorkspace dashboardWorkspace;
   @Inject private TestWorkspace ws;
-  @Inject private DefaultTestUser user;
+  @Inject private TestUser user;
   @Inject private TestWorkspaceServiceClient workspaceServiceClient;
 
   private String workspaceName;

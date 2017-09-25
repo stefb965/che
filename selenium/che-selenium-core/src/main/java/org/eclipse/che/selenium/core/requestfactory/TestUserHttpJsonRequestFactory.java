@@ -27,8 +27,8 @@ public class TestUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
 
   @Inject
   public TestUserHttpJsonRequestFactory(
-      @Named("che.user.email") String username,
-      @Named("che.user.password") String password,
+      @Named("test_user.email") String username,
+      @Named("test_user.password") String password,
       TestAuthServiceClient authServiceClient) {
     this.username = username;
     this.password = password;

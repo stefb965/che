@@ -14,7 +14,6 @@ import org.eclipse.che.api.factory.shared.dto.FactoryDto;
 import org.eclipse.che.selenium.core.client.TestFactoryServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
 import org.eclipse.che.selenium.core.provider.TestDashboardUrlProvider;
-import org.eclipse.che.selenium.core.user.DefaultTestUser;
 import org.eclipse.che.selenium.core.user.TestUser;
 import org.eclipse.che.selenium.pageobject.site.LoginPage;
 import org.openqa.selenium.WebDriver;
@@ -32,7 +31,7 @@ public class TestFactory {
 
   public TestFactory(
       String factoryUrl,
-      DefaultTestUser owner,
+      TestUser owner,
       FactoryDto factoryDto,
       TestDashboardUrlProvider dashboardUrl,
       TestFactoryServiceClient factoryServiceClient,

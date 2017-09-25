@@ -10,5 +10,24 @@
  */
 package org.eclipse.che.selenium.core.client;
 
+import org.eclipse.che.api.core.BadRequestException;
+import org.eclipse.che.api.core.ConflictException;
+import org.eclipse.che.api.core.NotFoundException;
+import org.eclipse.che.api.core.ServerException;
+import org.eclipse.che.api.core.UnauthorizedException;
+import org.eclipse.che.api.core.model.user.User;
+
 /** @author Mihail Kuznyetsov */
-public interface TestUserServiceClient {}
+public interface TestUserServiceClient {
+
+  User create(User toCreate, String token, boolean isTemporary)
+      throws BadRequestException, UnauthorizedException, ConflictException, ServerException;
+
+  User getById(String id) throws NotFoundException, ServerException;
+
+  User findByEmail(String email) throws NotFoundException, ServerException, BadRequestException;
+
+  User findByName(String name) throws NotFoundException, ServerException, BadRequestException;
+
+  void remove(String id) throws ServerException, ConflictException;
+}
