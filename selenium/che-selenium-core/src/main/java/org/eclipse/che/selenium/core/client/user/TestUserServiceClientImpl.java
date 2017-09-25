@@ -10,7 +10,10 @@
  */
 package org.eclipse.che.selenium.core.client.user;
 
+import static org.eclipse.che.dto.server.DtoFactory.newDto;
+
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import java.io.IOException;
 import java.net.URLEncoder;
 import org.eclipse.che.api.core.BadRequestException;
@@ -20,35 +23,44 @@ import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.UnauthorizedException;
 import org.eclipse.che.api.core.model.user.User;
+import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
 import org.eclipse.che.api.user.shared.dto.UserDto;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
-import org.eclipse.che.selenium.core.requestfactory.TestAdminHttpJsonRequestFactory;
 
 /** @author Musienko Maxim */
-public class CheTestUserServiceClient implements TestUserServiceClient {
-  private final String apiEndpoint;
-  private final TestAdminHttpJsonRequestFactory adminRequestFactory;
+@Singleton
+public class TestUserServiceClientImpl implements TestUserServiceClient {
+
+  private final String userServiceEndpoint;
+  protected final HttpJsonRequestFactory requestFactory;
 
   @Inject
-  public CheTestUserServiceClient(
-      TestApiEndpointUrlProvider apiEndpointProvider,
-      TestAdminHttpJsonRequestFactory requestFactory) {
-    this.apiEndpoint = apiEndpointProvider.get().toString();
-    this.adminRequestFactory = requestFactory;
+  public TestUserServiceClientImpl(
+      TestApiEndpointUrlProvider apiEndpointProvider, HttpJsonRequestFactory requestFactory) {
+    this.userServiceEndpoint = apiEndpointProvider.get().toString() + "user/";
+    this.requestFactory = requestFactory;
   }
 
   @Override
-  public User create(User toCreate, String token, boolean isTemporary)
-      throws BadRequestException, UnauthorizedException, ConflictException, ServerException {
-    throw new RuntimeException("Operation is not supported");
+  public void create(String name, String email, String password)
+      throws BadRequestException, ConflictException, ServerException {
+    try {
+      requestFactory
+          .fromUrl(userServiceEndpoint)
+          .usePostMethod()
+          .setBody(newDto(UserDto.class).withEmail(email).withName(name).withPassword(password))
+          .request();
+    } catch (IOException | UnauthorizedException | NotFoundException | ForbiddenException ex) {
+      throw new ServerException(ex);
+    }
   }
 
   @Override
   public User getById(String id) throws NotFoundException, ServerException {
     try {
-      return adminRequestFactory
-          .fromUrl(apiEndpoint + "user/" + id)
+      return requestFactory
+          .fromUrl(userServiceEndpoint + id)
           .useGetMethod()
           .request()
           .asDto(UserDto.class);
@@ -57,7 +69,7 @@ public class CheTestUserServiceClient implements TestUserServiceClient {
         | UnauthorizedException
         | ForbiddenException
         | ConflictException ex) {
-      throw new ServerException(ex.getMessage(), ex);
+      throw new ServerException(ex);
     }
   }
 
@@ -65,14 +77,14 @@ public class CheTestUserServiceClient implements TestUserServiceClient {
   public User findByEmail(String email)
       throws BadRequestException, NotFoundException, ServerException {
     try {
-      return adminRequestFactory
-          .fromUrl(apiEndpoint + "user/find")
+      return requestFactory
+          .fromUrl(userServiceEndpoint + "find")
           .useGetMethod()
           .addQueryParam("email", URLEncoder.encode(email, "UTF-8"))
           .request()
           .asDto(UserDto.class);
     } catch (IOException | UnauthorizedException | ForbiddenException | ConflictException ex) {
-      throw new ServerException(ex.getMessage(), ex);
+      throw new ServerException(ex);
     }
   }
 
@@ -80,23 +92,27 @@ public class CheTestUserServiceClient implements TestUserServiceClient {
   public User findByName(String name)
       throws BadRequestException, NotFoundException, ServerException {
     try {
-      return adminRequestFactory
-          .fromUrl(apiEndpoint + "user/find")
+      return requestFactory
+          .fromUrl(userServiceEndpoint + "find")
           .useGetMethod()
           .addQueryParam("name", name)
           .request()
           .asDto(UserDto.class);
     } catch (IOException | UnauthorizedException | ForbiddenException | ConflictException ex) {
-      throw new ServerException(ex.getMessage(), ex);
+      throw new ServerException(ex);
     }
   }
 
   @Override
-  public void remove(String id) throws ServerException, ConflictException {
-    throw new RuntimeException("Operation is not supported");
-  }
-
-  public void removeByEmail(String email) throws Exception {
-    throw new RuntimeException("Operation is not supported");
+  public void remove(String id) throws ConflictException, ServerException {
+    try {
+      requestFactory.fromUrl(userServiceEndpoint + id).useDeleteMethod().request();
+    } catch (IOException
+        | BadRequestException
+        | NotFoundException
+        | UnauthorizedException
+        | ForbiddenException ex) {
+      throw new ServerException(ex);
+    }
   }
 }

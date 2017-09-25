@@ -16,7 +16,7 @@ import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
 import org.eclipse.che.selenium.core.client.CheTestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
-import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
+import org.eclipse.che.selenium.core.client.user.CheUserTestUserServiceClient;
 
 /** @author Anton Korneta */
 public class CheSeleniumSingleUserModule extends AbstractModule {
@@ -25,7 +25,7 @@ public class CheSeleniumSingleUserModule extends AbstractModule {
   protected void configure() {
     bind(TestAuthServiceClient.class).to(CheTestAuthServiceClient.class);
     // TODO Che user service client
-    bind(TestUserServiceClient.class).to(CheTestUserServiceClient.class);
+    bind(TestUserServiceClient.class).to(CheUserTestUserServiceClient.class);
     // TODO bind(TestUserNamespaceResolver.class).to(MultiUserCheTestUserNamespaceResolver.class);
     // TODO  bind(TestWorkspaceUrlResolver.class).to(MultiUserCheTestWorkspaceUrlResolver.class);
 

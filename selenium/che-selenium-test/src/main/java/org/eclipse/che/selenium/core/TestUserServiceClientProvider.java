@@ -14,7 +14,7 @@ import com.google.inject.Provider;
 import javax.inject.Inject;
 import javax.inject.Named;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
-import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
+import org.eclipse.che.selenium.core.client.user.TestUserServiceClientImpl;
 
 /** @author Anton Korneta */
 public class TestUserServiceClientProvider implements Provider<TestUserServiceClient> {
@@ -25,7 +25,7 @@ public class TestUserServiceClientProvider implements Provider<TestUserServiceCl
   @Inject
   public TestUserServiceClientProvider(
       @Named("che.multiuser") boolean isMultiUser,
-      CheTestUserServiceClient cheTestUserServiceClient) {
+      TestUserServiceClientImpl cheTestUserServiceClient) {
     this.isMultiUser = isMultiUser;
     this.cheTestUserServiceClient = cheTestUserServiceClient;
   }

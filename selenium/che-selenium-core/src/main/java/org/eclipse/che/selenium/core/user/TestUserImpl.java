@@ -19,8 +19,8 @@ import java.util.List;
 import javax.annotation.PreDestroy;
 import org.eclipse.che.commons.lang.NameGenerator;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
+import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
-import org.eclipse.che.selenium.core.client.user.CheTestUserServiceClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,12 +34,12 @@ public class TestUserImpl implements TestUser {
   private final String id;
   private final String authToken;
 
-  private final CheTestUserServiceClient userServiceClient;
+  private final TestUserServiceClient userServiceClient;
   private final TestWorkspaceServiceClient workspaceServiceClient;
 
   @AssistedInject
   public TestUserImpl(
-      CheTestUserServiceClient userServiceClient,
+      TestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient)
       throws Exception {
@@ -53,7 +53,7 @@ public class TestUserImpl implements TestUser {
   /** To instantiate user with specific e-mail. */
   @AssistedInject
   public TestUserImpl(
-      CheTestUserServiceClient userServiceClient,
+      TestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient,
       @Assisted("email") String email)
@@ -69,7 +69,7 @@ public class TestUserImpl implements TestUser {
   /** To instantiate user with specific e-mail and password. */
   @AssistedInject
   public TestUserImpl(
-      CheTestUserServiceClient userServiceClient,
+      TestUserServiceClient userServiceClient,
       TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient,
       @Assisted("email") String email,
@@ -80,6 +80,7 @@ public class TestUserImpl implements TestUser {
     this.email = email;
     this.password = password;
     this.name = email.split("@")[0];
+    this.userServiceClient.create(name, email, password);
     this.authToken = authServiceClient.login(name, password);
     this.id = userServiceClient.findByEmail(email).getId();
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
@@ -130,7 +131,7 @@ public class TestUserImpl implements TestUser {
     }
 
     try {
-      userServiceClient.removeByEmail(email);
+      userServiceClient.remove(id);
       LOG.info("User name='{}', id='{}' removed", name, id);
     } catch (Exception e) {
       LOG.error(format("Failed to remove user email='%s', id='%s'", email, id), e);
