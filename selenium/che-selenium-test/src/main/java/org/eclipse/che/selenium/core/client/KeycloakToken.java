@@ -15,13 +15,15 @@ import com.google.gson.annotations.SerializedName;
 /** @author Mihail Kuznyetsov */
 public class KeycloakToken {
   @SerializedName("access_token")
-  String accessToken;
+  private String accessToken;
 
   @SerializedName("expires_in")
-  long expirationTime;
+  private long expiresIn;
 
   @SerializedName("refresh_token")
-  String refreshToken;
+  private String refreshToken;
+
+  private TokenDetails details;
 
   public KeycloakToken() {}
 
@@ -33,12 +35,12 @@ public class KeycloakToken {
     this.accessToken = accessToken;
   }
 
-  public long getExpirationTime() {
-    return expirationTime;
+  public long getExpiresIn() {
+    return expiresIn;
   }
 
-  public void setExpirationTime(long expirationTime) {
-    this.expirationTime = expirationTime;
+  public void setExpiresIn(long expiresIn) {
+    this.expiresIn = expiresIn;
   }
 
   public String getRefreshToken() {
@@ -47,5 +49,37 @@ public class KeycloakToken {
 
   public void setRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
+  }
+
+  public TokenDetails getDetails() {
+    return details;
+  }
+
+  public void setDetails(TokenDetails details) {
+    this.details = details;
+  }
+
+  class TokenDetails {
+    @SerializedName("exp")
+    private long expiresAt;
+
+    @SerializedName("iat")
+    private long initialized;
+
+    public long getExpiresAt() {
+      return expiresAt;
+    }
+
+    public void setExpiresAt(long expiresAt) {
+      this.expiresAt = expiresAt;
+    }
+
+    public long getInitialized() {
+      return initialized;
+    }
+
+    public void setInitialized(long initialized) {
+      this.initialized = initialized;
+    }
   }
 }
