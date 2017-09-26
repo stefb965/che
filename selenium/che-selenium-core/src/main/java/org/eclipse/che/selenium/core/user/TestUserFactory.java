@@ -12,7 +12,10 @@ package org.eclipse.che.selenium.core.user;
 
 import com.google.inject.assistedinject.Assisted;
 
-/** @author Anton Korneta */
+/**
+ * @author Anton Korneta
+ * @author Dmytro Nochevnov
+ */
 public interface TestUserFactory {
 
   /** Creates new test user with generated e-mail and password */

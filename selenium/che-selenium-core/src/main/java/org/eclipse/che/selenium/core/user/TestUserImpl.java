@@ -21,11 +21,17 @@ import org.eclipse.che.commons.lang.NameGenerator;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClient;
+import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClientFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Anatolii Bazko */
+/**
+ * @author Anatolii Bazko
+ * @author Dmytro Nochevnov
+ * @author Anton Korneta
+ */
 public class TestUserImpl implements TestUser {
+
   private static final Logger LOG = LoggerFactory.getLogger(TestUserImpl.class);
 
   private final String email;
@@ -37,16 +43,17 @@ public class TestUserImpl implements TestUser {
   private final TestUserServiceClient userServiceClient;
   private final TestWorkspaceServiceClient workspaceServiceClient;
 
+  /** To instantiate user with generated email and password. */
   @AssistedInject
   public TestUserImpl(
       TestUserServiceClient userServiceClient,
-      TestWorkspaceServiceClient workspaceServiceClient,
-      TestAuthServiceClient authServiceClient)
+      TestAuthServiceClient authServiceClient,
+      TestWorkspaceServiceClientFactory wsServiceClientFactory)
       throws Exception {
     this(
         userServiceClient,
-        workspaceServiceClient,
         authServiceClient,
+        wsServiceClientFactory,
         NameGenerator.generate("user", 6) + "@some.mail");
   }
 
@@ -54,14 +61,14 @@ public class TestUserImpl implements TestUser {
   @AssistedInject
   public TestUserImpl(
       TestUserServiceClient userServiceClient,
-      TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient,
+      TestWorkspaceServiceClientFactory wsServiceClientFactory,
       @Assisted("email") String email)
       throws Exception {
     this(
         userServiceClient,
-        workspaceServiceClient,
         authServiceClient,
+        wsServiceClientFactory,
         email,
         NameGenerator.generate("Pwd1", 6));
   }
@@ -70,13 +77,12 @@ public class TestUserImpl implements TestUser {
   @AssistedInject
   public TestUserImpl(
       TestUserServiceClient userServiceClient,
-      TestWorkspaceServiceClient workspaceServiceClient,
       TestAuthServiceClient authServiceClient,
+      TestWorkspaceServiceClientFactory wsServiceClientFactory,
       @Assisted("email") String email,
       @Assisted("password") String password)
       throws Exception {
     this.userServiceClient = userServiceClient;
-    this.workspaceServiceClient = workspaceServiceClient;
     this.email = email;
     this.password = password;
     this.name = email.split("@")[0];
@@ -84,6 +90,7 @@ public class TestUserImpl implements TestUser {
     this.authToken = authServiceClient.login(name, password);
     this.id = userServiceClient.findByEmail(email).getId();
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
+    this.workspaceServiceClient = wsServiceClientFactory.create(this);
   }
 
   @Override

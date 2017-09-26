@@ -24,6 +24,7 @@ import org.eclipse.che.selenium.core.action.GenericActionsFactory;
 import org.eclipse.che.selenium.core.action.MacOSActionsFactory;
 import org.eclipse.che.selenium.core.client.CheTestMachineServiceClient;
 import org.eclipse.che.selenium.core.client.TestMachineServiceClient;
+import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClientFactory;
 import org.eclipse.che.selenium.core.configuration.SeleniumTestConfiguration;
 import org.eclipse.che.selenium.core.configuration.TestConfiguration;
 import org.eclipse.che.selenium.core.provider.CheTestApiEndpointUrlProvider;
@@ -40,6 +41,7 @@ import org.eclipse.che.selenium.core.provider.TestSvnPasswordProvider;
 import org.eclipse.che.selenium.core.provider.TestSvnRepo1Provider;
 import org.eclipse.che.selenium.core.provider.TestSvnRepo2Provider;
 import org.eclipse.che.selenium.core.provider.TestSvnUsernameProvider;
+import org.eclipse.che.selenium.core.requestfactory.TestUserHttpJsonRequestFactoryCreator;
 import org.eclipse.che.selenium.core.user.TestUser;
 import org.eclipse.che.selenium.core.user.TestUserFactory;
 import org.eclipse.che.selenium.core.workspace.TestWorkspace;
@@ -71,10 +73,14 @@ public class CheSeleniumSuiteModule extends AbstractModule {
     bind(TestIdeUrlProvider.class).to(CheTestIdeUrlProvider.class);
     bind(TestDashboardUrlProvider.class).to(CheTestDashboardUrlProvider.class);
 
+    install(new FactoryModuleBuilder().build(TestUserHttpJsonRequestFactoryCreator.class));
+
     bind(TestMachineServiceClient.class).to(CheTestMachineServiceClient.class);
     bind(TestWorkspaceProvider.class).to(TestWorkspaceProviderImpl.class).asEagerSingleton();
 
+    install(new FactoryModuleBuilder().build(TestWorkspaceServiceClientFactory.class));
     install(new FactoryModuleBuilder().build(TestUserFactory.class));
+
     if (parseBoolean(System.getenv(CHE_MULTIUSER_VARIABLE))) {
       install(new CheSeleniumMultiUserModule());
     } else {

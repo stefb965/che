@@ -8,15 +8,11 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.plugin.jdb.server.expression;
+package org.eclipse.che.selenium.core.requestfactory;
 
-/** @author andrew00x */
-public class ExpressionException extends RuntimeException {
-  public ExpressionException(String message) {
-    super(message);
-  }
+import org.eclipse.che.selenium.core.user.TestUser;
 
-  public ExpressionException(String message, Throwable cause) {
-    super(message, cause);
-  }
+/** @author Dmytro Nochevnov */
+public interface TestUserHttpJsonRequestFactoryCreator {
+  TestUserHttpJsonRequestFactory create(TestUser testuser);
 }

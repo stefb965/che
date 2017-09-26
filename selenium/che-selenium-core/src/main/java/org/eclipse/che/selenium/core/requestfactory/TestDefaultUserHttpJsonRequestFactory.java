@@ -12,22 +12,23 @@ package org.eclipse.che.selenium.core.requestfactory;
 
 import static java.lang.String.format;
 
-import com.google.inject.assistedinject.Assisted;
-import com.google.inject.assistedinject.AssistedInject;
+import com.google.inject.Inject;
+import com.google.inject.Singleton;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.user.TestUser;
 
 /** @author Dmytro Nochevnov */
-public class TestUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
+@Singleton
+public class TestDefaultUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
 
   private final TestUser testUser;
   private final TestAuthServiceClient authServiceClient;
 
-  @AssistedInject
-  public TestUserHttpJsonRequestFactory(
-      TestAuthServiceClient authServiceClient, @Assisted TestUser testUser) {
-    this.authServiceClient = authServiceClient;
+  @Inject
+  public TestDefaultUserHttpJsonRequestFactory(
+      TestAuthServiceClient authServiceClient, TestUser testUser) {
     this.testUser = testUser;
+    this.authServiceClient = authServiceClient;
   }
 
   @Override

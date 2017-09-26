@@ -23,21 +23,22 @@ import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
 import org.eclipse.che.api.core.UnauthorizedException;
 import org.eclipse.che.api.core.model.user.User;
-import org.eclipse.che.api.core.rest.HttpJsonRequestFactory;
 import org.eclipse.che.api.user.shared.dto.UserDto;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
+import org.eclipse.che.selenium.core.requestfactory.TestAdminHttpJsonRequestFactory;
 
 /** @author Musienko Maxim */
 @Singleton
 public class TestUserServiceClientImpl implements TestUserServiceClient {
 
   private final String userServiceEndpoint;
-  protected final HttpJsonRequestFactory requestFactory;
+  private final TestAdminHttpJsonRequestFactory requestFactory;
 
   @Inject
   public TestUserServiceClientImpl(
-      TestApiEndpointUrlProvider apiEndpointProvider, HttpJsonRequestFactory requestFactory) {
+      TestApiEndpointUrlProvider apiEndpointProvider,
+      TestAdminHttpJsonRequestFactory requestFactory) {
     this.userServiceEndpoint = apiEndpointProvider.get().toString() + "user/";
     this.requestFactory = requestFactory;
   }
