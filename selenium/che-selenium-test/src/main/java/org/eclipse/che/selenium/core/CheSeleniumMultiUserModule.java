@@ -37,14 +37,11 @@ public class CheSeleniumMultiUserModule extends AbstractModule {
     bind(TestUser.class).to(DefaultTestUser.class);
     bind(AdminTestUser.class).to(CheAdminTestUser.class);
 
-    // TODO Che user service client
     bind(TestUserServiceClient.class).to(CheUserTestUserServiceClient.class);
     bind(HttpJsonRequestFactory.class).to(TestHttpJsonRequestFactory.class);
     bind(TestHttpJsonRequestFactory.class).to(TestUserHttpJsonRequestFactory.class);
 
     bind(TestWorkspaceUrlResolver.class).to(CheTestWorkspaceUrlResolver.class);
     bind(TestUserNamespaceResolver.class).to(CheTestUserNamespaceResolver.class);
-    // TODO bind(TestUserNamespaceResolver.class).to(MultiUserCheTestUserNamespaceResolver.class);
-    // TODO  bind(TestWorkspaceUrlResolver.class).to(MultiUserCheTestWorkspaceUrlResolver.class);
   }
 }

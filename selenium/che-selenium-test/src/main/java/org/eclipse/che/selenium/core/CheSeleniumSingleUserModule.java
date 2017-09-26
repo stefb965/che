@@ -24,15 +24,7 @@ public class CheSeleniumSingleUserModule extends AbstractModule {
   @Override
   protected void configure() {
     bind(TestAuthServiceClient.class).to(CheTestAuthServiceClient.class);
-    // TODO Che user service client
     bind(TestUserServiceClient.class).to(CheUserTestUserServiceClient.class);
-    // TODO bind(TestUserNamespaceResolver.class).to(MultiUserCheTestUserNamespaceResolver.class);
-    // TODO  bind(TestWorkspaceUrlResolver.class).to(MultiUserCheTestWorkspaceUrlResolver.class);
-
-    //    bind(TestWorkspaceUrlResolver.class).to(CheTestWorkspaceUrlResolver.class);
-    //    bind(TestUserNamespaceResolver.class).to(CheTestUserNamespaceResolver.class);
-
-    // we do not need any tokens for single user assemly
     bind(HttpJsonRequestFactory.class).to(DefaultHttpJsonRequestFactory.class);
   }
 }
