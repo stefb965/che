@@ -36,7 +36,7 @@ public class TestUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
       return authServiceClient.login(testUser.getEmail(), testUser.getPassword());
     } catch (Exception ex) {
       throw new RuntimeException(
-          format("Failed to access get token for user '%s'", testUser.getName()));
+          format("Failed to get access token for user '%s'", testUser.getName()));
     }
   }
 }

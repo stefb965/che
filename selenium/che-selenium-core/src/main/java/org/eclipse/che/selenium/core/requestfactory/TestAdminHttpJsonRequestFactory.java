@@ -10,6 +10,8 @@
  */
 package org.eclipse.che.selenium.core.requestfactory;
 
+import static java.lang.String.format;
+
 import com.google.inject.name.Named;
 import javax.inject.Inject;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
@@ -35,7 +37,7 @@ public class TestAdminHttpJsonRequestFactory extends TestHttpJsonRequestFactory 
     try {
       return authServiceClient.login(adminEmail, adminPassword);
     } catch (Exception ex) {
-      throw new RuntimeException("Failed to get access token for admin user");
+      throw new RuntimeException(format("Failed to get access token for user '%s'", adminEmail));
     }
   }
 }
