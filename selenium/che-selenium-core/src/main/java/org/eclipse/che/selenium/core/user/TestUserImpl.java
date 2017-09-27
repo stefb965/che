@@ -68,14 +68,30 @@ public class TestUserImpl implements TestUser {
       @Assisted("email") String email,
       @Assisted("password") String password)
       throws Exception {
+    this(
+        email,
+        NameGenerator.generate("Pwd1", 6),
+        userServiceClient,
+        workspaceServiceClient,
+        authServiceClient);
+  }
+
+  /** To instantiate user with specific e-mail. */
+  public TestUserImpl(
+      String email,
+      String password,
+      TestUserServiceClient userServiceClient,
+      TestWorkspaceServiceClient workspaceServiceClient,
+      TestAuthServiceClient authServiceClient)
+      throws Exception {
     this.userServiceClient = userServiceClient;
 
     this.email = email;
     this.password = password;
     this.name = email.split("@")[0];
 
-    this.id = userServiceClient.create(email, password).getId();
-
+    //    this.id = userServiceClient.create(email, password).getId();
+    this.id = "id";
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
 
     this.authToken = authServiceClient.login(getName(), getPassword());
@@ -142,12 +158,12 @@ public class TestUserImpl implements TestUser {
       }
     }
 
-    try {
-      userServiceClient.deleteByEmail(email);
-      LOG.info("User name='{}', id='{}' removed", name, id);
-    } catch (Exception e) {
-      LOG.error(format("Failed to remove user name='%s', id='%s'", email, id), e);
-    }
+    //    try {
+    //      userServiceClient.deleteByEmail(email);
+    //      LOG.info("User name='{}', id='{}' removed", name, id);
+    //    } catch (Exception e) {
+    //      LOG.error(format("Failed to remove user email='%s', id='%s'", email, id), e);
+    //    }
   }
 
   @Override
