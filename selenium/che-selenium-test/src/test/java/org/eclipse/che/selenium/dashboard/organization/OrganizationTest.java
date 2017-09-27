@@ -77,7 +77,6 @@ public class OrganizationTest {
 
     dashboard.open(adminTestUser.getName(), adminTestUser.getPassword());
     orgName = generate("orgX", 6);
-
     organization = organizationServiceClient.createOrganization(orgName);
   }
 
@@ -130,7 +129,7 @@ public class OrganizationTest {
     }
   }
 
-  //@Test(priority = 1)
+  @Test(priority = 1)
   public void addOrganizationWithMembers() {
     String name = generate("orgY", 4);
     navigationBar.waitNavigationBar();
