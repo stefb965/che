@@ -70,12 +70,10 @@ public class OrganizationTest {
                 throw new RuntimeException(e.getMessage(), e);
               }
             });
-
-    orgName = generate("orgX", 6);
-
-    organization = organizationServiceClient.createOrganization(orgName);*/
-
+    */
     dashboard.open(adminTestUser.getName(), adminTestUser.getPassword());
+    orgName = generate("orgX", 6);
+    organization = organizationServiceClient.createOrganization(orgName);
   }
 
   @AfterClass
