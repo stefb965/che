@@ -10,9 +10,10 @@
  */
 package org.eclipse.che.selenium.core.requestfactory;
 
-import org.eclipse.che.selenium.core.user.TestUser;
+import com.google.inject.assistedinject.Assisted;
 
 /** @author Dmytro Nochevnov */
 public interface TestUserHttpJsonRequestFactoryCreator {
-  TestUserHttpJsonRequestFactory create(TestUser testuser);
+  TestUserHttpJsonRequestFactory create(
+      @Assisted("email") String email, @Assisted("password") String password);
 }
