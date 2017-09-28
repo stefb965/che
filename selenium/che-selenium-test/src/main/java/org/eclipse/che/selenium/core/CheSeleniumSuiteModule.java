@@ -22,8 +22,6 @@ import javax.inject.Named;
 import org.eclipse.che.selenium.core.action.ActionsFactory;
 import org.eclipse.che.selenium.core.action.GenericActionsFactory;
 import org.eclipse.che.selenium.core.action.MacOSActionsFactory;
-import org.eclipse.che.selenium.core.client.CheTestMachineServiceClient;
-import org.eclipse.che.selenium.core.client.TestMachineServiceClient;
 import org.eclipse.che.selenium.core.client.TestWorkspaceServiceClientFactory;
 import org.eclipse.che.selenium.core.configuration.SeleniumTestConfiguration;
 import org.eclipse.che.selenium.core.configuration.TestConfiguration;
@@ -73,7 +71,6 @@ public class CheSeleniumSuiteModule extends AbstractModule {
     bind(TestIdeUrlProvider.class).to(CheTestIdeUrlProvider.class);
     bind(TestDashboardUrlProvider.class).to(CheTestDashboardUrlProvider.class);
 
-    bind(TestMachineServiceClient.class).to(CheTestMachineServiceClient.class);
     bind(TestWorkspaceProvider.class).to(TestWorkspaceProviderImpl.class).asEagerSingleton();
 
     install(new FactoryModuleBuilder().build(TestUserHttpJsonRequestFactoryCreator.class));

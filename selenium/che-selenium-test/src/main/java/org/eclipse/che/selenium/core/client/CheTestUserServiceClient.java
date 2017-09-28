@@ -8,22 +8,23 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.selenium.core.client.user;
+package org.eclipse.che.selenium.core.client;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.eclipse.che.api.core.BadRequestException;
 import org.eclipse.che.api.core.ConflictException;
 import org.eclipse.che.api.core.ServerException;
+import org.eclipse.che.selenium.core.client.user.TestUserServiceClientImpl;
 import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
 import org.eclipse.che.selenium.core.requestfactory.TestUserHttpJsonRequestFactory;
 
 /** @author Anton Korneta */
 @Singleton
-public class CheUserTestUserServiceClient extends TestUserServiceClientImpl {
+public class CheTestUserServiceClient extends TestUserServiceClientImpl {
 
   @Inject
-  public CheUserTestUserServiceClient(
+  public CheTestUserServiceClient(
       TestApiEndpointUrlProvider apiEndpointProvider,
       TestUserHttpJsonRequestFactory requestFactory) {
     super(apiEndpointProvider, requestFactory);
