@@ -73,11 +73,10 @@ public class CheSeleniumSuiteModule extends AbstractModule {
     bind(TestIdeUrlProvider.class).to(CheTestIdeUrlProvider.class);
     bind(TestDashboardUrlProvider.class).to(CheTestDashboardUrlProvider.class);
 
-    install(new FactoryModuleBuilder().build(TestUserHttpJsonRequestFactoryCreator.class));
-
     bind(TestMachineServiceClient.class).to(CheTestMachineServiceClient.class);
     bind(TestWorkspaceProvider.class).to(TestWorkspaceProviderImpl.class).asEagerSingleton();
 
+    install(new FactoryModuleBuilder().build(TestUserHttpJsonRequestFactoryCreator.class));
     install(new FactoryModuleBuilder().build(TestWorkspaceServiceClientFactory.class));
     install(new FactoryModuleBuilder().build(TestUserFactory.class));
 

@@ -90,7 +90,7 @@ public class TestUserImpl implements TestUser {
     this.authToken = authServiceClient.login(name, password);
     this.id = userServiceClient.findByEmail(email).getId();
     LOG.info("User name='{}', password '{}', id='{}' has been created", name, password, id);
-    this.workspaceServiceClient = wsServiceClientFactory.create(this);
+    this.workspaceServiceClient = wsServiceClientFactory.create(email, password);
   }
 
   @Override

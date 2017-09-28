@@ -16,7 +16,8 @@ import org.eclipse.che.selenium.core.client.KeycloakTestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.client.user.CheUserTestUserServiceClient;
-import org.eclipse.che.selenium.core.requestfactory.TestHttpJsonRequestFactory;
+import org.eclipse.che.selenium.core.requestfactory.CheDefaultUserHttpJsonRequestFactory;
+import org.eclipse.che.selenium.core.requestfactory.TestUserHttpJsonRequestFactory;
 import org.eclipse.che.selenium.core.user.AdminTestUser;
 import org.eclipse.che.selenium.core.user.CheAdminTestUser;
 import org.eclipse.che.selenium.core.user.CheDefaultTestUser;
@@ -37,7 +38,8 @@ public class CheSeleniumMultiUserModule extends AbstractModule {
     bind(AdminTestUser.class).to(CheAdminTestUser.class);
 
     bind(TestUserServiceClient.class).to(CheUserTestUserServiceClient.class);
-    bind(HttpJsonRequestFactory.class).to(TestHttpJsonRequestFactory.class);
+    bind(HttpJsonRequestFactory.class).to(TestUserHttpJsonRequestFactory.class);
+    bind(TestUserHttpJsonRequestFactory.class).to(CheDefaultUserHttpJsonRequestFactory.class);
 
     bind(TestWorkspaceUrlResolver.class).to(CheTestWorkspaceUrlResolver.class);
     bind(TestUserNamespaceResolver.class).to(CheTestUserNamespaceResolver.class);

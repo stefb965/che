@@ -15,28 +15,30 @@ import static java.lang.String.format;
 import com.google.inject.assistedinject.Assisted;
 import com.google.inject.assistedinject.AssistedInject;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
-import org.eclipse.che.selenium.core.user.TestUser;
 
 /** @author Dmytro Nochevnov */
 public class TestUserHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
 
-  private final TestUser testUser;
+  private final String email;
+  private final String password;
   private final TestAuthServiceClient authServiceClient;
 
   @AssistedInject
   public TestUserHttpJsonRequestFactory(
-      TestAuthServiceClient authServiceClient, @Assisted TestUser testUser) {
+      TestAuthServiceClient authServiceClient,
+      @Assisted("email") String email,
+      @Assisted("password") String password) {
     this.authServiceClient = authServiceClient;
-    this.testUser = testUser;
+    this.email = email;
+    this.password = password;
   }
 
   @Override
   protected String getAuthToken() {
     try {
-      return authServiceClient.login(testUser.getEmail(), testUser.getPassword());
+      return authServiceClient.login(email, password);
     } catch (Exception ex) {
-      throw new RuntimeException(
-          format("Failed to get access token for user '%s'", testUser.getName()));
+      throw new RuntimeException(format("Failed to get access token for user '%s'", email));
     }
   }
 }

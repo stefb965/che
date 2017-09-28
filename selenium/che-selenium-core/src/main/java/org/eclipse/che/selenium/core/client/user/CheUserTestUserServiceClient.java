@@ -14,42 +14,24 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import org.eclipse.che.api.core.BadRequestException;
 import org.eclipse.che.api.core.ConflictException;
-import org.eclipse.che.api.core.NotFoundException;
 import org.eclipse.che.api.core.ServerException;
-import org.eclipse.che.api.core.model.user.User;
-import org.eclipse.che.selenium.core.client.TestUserServiceClient;
+import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
+import org.eclipse.che.selenium.core.requestfactory.TestUserHttpJsonRequestFactory;
 
 /** @author Anton Korneta */
 @Singleton
-public class CheUserTestUserServiceClient implements TestUserServiceClient {
-
-  private final TestUserServiceClientImpl delegate;
+public class CheUserTestUserServiceClient extends TestUserServiceClientImpl {
 
   @Inject
-  public CheUserTestUserServiceClient(TestUserServiceClientImpl delegate) {
-    this.delegate = delegate;
+  public CheUserTestUserServiceClient(
+      TestApiEndpointUrlProvider apiEndpointProvider,
+      TestUserHttpJsonRequestFactory requestFactory) {
+    super(apiEndpointProvider, requestFactory);
   }
 
   @Override
   public void create(String name, String email, String password)
       throws BadRequestException, ConflictException, ServerException {}
-
-  @Override
-  public User getById(String id) throws NotFoundException, ServerException {
-    return delegate.getById(id);
-  }
-
-  @Override
-  public User findByEmail(String email)
-      throws NotFoundException, ServerException, BadRequestException {
-    return delegate.findByEmail(email);
-  }
-
-  @Override
-  public User findByName(String name)
-      throws NotFoundException, ServerException, BadRequestException {
-    return delegate.findByName(name);
-  }
 
   @Override
   public void remove(String id) throws ServerException, ConflictException {}

@@ -10,9 +10,10 @@
  */
 package org.eclipse.che.selenium.core.client;
 
-import org.eclipse.che.selenium.core.user.TestUser;
+import com.google.inject.assistedinject.Assisted;
 
 /** @author Dmytro Nochevnov */
 public interface TestWorkspaceServiceClientFactory {
-  TestWorkspaceServiceClient create(TestUser testUser);
+  TestWorkspaceServiceClient create(
+      @Assisted("email") String email, @Assisted("password") String password);
 }
