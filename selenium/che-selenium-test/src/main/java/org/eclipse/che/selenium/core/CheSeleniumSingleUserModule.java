@@ -18,7 +18,7 @@ import org.eclipse.che.selenium.core.client.DummyCheTestMachineServiceClient;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 import org.eclipse.che.selenium.core.client.TestMachineServiceClient;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
-import org.eclipse.che.selenium.core.requestfactory.CheDefaultUserHttpJsonRequestFactory;
+import org.eclipse.che.selenium.core.requestfactory.TestCheDefaultUserHttpJsonRequestFactory;
 import org.eclipse.che.selenium.core.requestfactory.TestUserHttpJsonRequestFactory;
 import org.eclipse.che.selenium.core.user.CheDefaultTestUser;
 import org.eclipse.che.selenium.core.user.CheTestUserNamespaceResolver;
@@ -38,7 +38,7 @@ public class CheSeleniumSingleUserModule extends AbstractModule {
     bind(TestAuthServiceClient.class).to(CheTestAuthServiceClient.class);
     bind(TestUserServiceClient.class).to(CheTestUserServiceClient.class);
     bind(HttpJsonRequestFactory.class).to(TestUserHttpJsonRequestFactory.class);
-    bind(TestUserHttpJsonRequestFactory.class).to(CheDefaultUserHttpJsonRequestFactory.class);
+    bind(TestUserHttpJsonRequestFactory.class).to(TestCheDefaultUserHttpJsonRequestFactory.class);
     bind(TestMachineServiceClient.class).to(DummyCheTestMachineServiceClient.class);
 
     bind(TestWorkspaceUrlResolver.class).to(CheTestWorkspaceUrlResolver.class);
