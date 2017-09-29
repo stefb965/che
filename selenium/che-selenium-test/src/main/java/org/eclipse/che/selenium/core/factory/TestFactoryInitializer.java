@@ -80,7 +80,7 @@ public class TestFactoryInitializer {
     HttpJsonRequest httpJsonRequest =
         requestFactory.fromUrl(apiEndpointProvider.get() + "factory/resolver");
     httpJsonRequest.setBody(singletonMap("url", url));
-    HttpJsonResponse respoTestCheDefaultUserHttpJsonRequestFactorynse = httpJsonRequest.request();
+    HttpJsonResponse response = httpJsonRequest.request();
 
     FactoryDto factoryDto = response.asDto(FactoryDto.class);
     String factoryUrl = ideUrlProvider.get() + "f?url=" + URLEncoder.encode(url, "UTF8");
