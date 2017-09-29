@@ -8,12 +8,13 @@
  * Contributors:
  *   Red Hat, Inc. - initial API and implementation
  */
-package org.eclipse.che.selenium.core.requestfactory;
+package org.eclipse.che.selenium.core.client;
 
-import com.google.inject.assistedinject.Assisted;
+/** @author Anton Korneta */
+public class DummyCheTestMachineServiceClient implements TestMachineServiceClient {
 
-/** @author Dmytro Nochevnov */
-public interface TestUserHttpJsonRequestFactoryCreator {
-  TestUserHttpJsonRequestFactory create(
-      @Assisted("email") String email, @Assisted("password") String password);
+  @Override
+  public String getMachineApiToken(String workspaceId) throws Exception {
+    return workspaceId;
+  }
 }

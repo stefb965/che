@@ -38,7 +38,10 @@ import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** @author Mykhailo Kuznietsov */
+/**
+ * @author Mykhailo Kuznietsov
+ * @author Anton Korneta
+ */
 public class KeycloakTestAuthServiceClient implements TestAuthServiceClient {
 
   private static final Logger LOG = LoggerFactory.getLogger(KeycloakTestAuthServiceClient.class);
@@ -51,7 +54,7 @@ public class KeycloakTestAuthServiceClient implements TestAuthServiceClient {
   private static final String REFRESH_TOKEN_GRAND_TYPE = "refresh_token";
   private static final String CHE_CLIENT_ID = "che-public";
 
-  private static final long MIN_TOKEN_LIFETIME = 30;
+  private static final long MIN_TOKEN_LIFETIME_SEC = 30;
 
   private final String apiEndpoint;
   private final KeycloakSettings keycloakSettings;
@@ -75,7 +78,7 @@ public class KeycloakTestAuthServiceClient implements TestAuthServiceClient {
     final KeycloakToken token = tokens.get(username);
     if (token != null) {
       final long now = now().atZone(systemDefault()).toEpochSecond();
-      if (token.getDetails().getExpiresAt() - now < MIN_TOKEN_LIFETIME) {
+      if (token.getDetails().getExpiresAt() - now < MIN_TOKEN_LIFETIME_SEC) {
         final KeycloakToken refreshed = refreshRequest(token);
         tokens.replace(username, refreshed);
       }

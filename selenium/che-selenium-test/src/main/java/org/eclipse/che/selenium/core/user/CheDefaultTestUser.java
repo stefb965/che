@@ -24,15 +24,15 @@ import com.google.inject.name.Named;
  * @author Dmytro Nochevnov
  */
 @Singleton
-public class DefaultTestUser implements TestUser {
+public class CheDefaultTestUser implements TestUser {
 
   private final TestUser delegate;
 
   @Inject
-  public DefaultTestUser(
+  public CheDefaultTestUser(
       TestUserFactory userFactory,
-      @Named("test_user.email") String email,
-      @Named("test_user.password") String password)
+      @Named("che.test_user.email") String email,
+      @Named("che.test_user.password") String password)
       throws Exception {
     this.delegate = userFactory.create(email, password);
   }

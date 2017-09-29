@@ -15,27 +15,13 @@ import javax.inject.Inject;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 
 /** @author Dmytro Nochevnov */
-public class TestAdminHttpJsonRequestFactory extends TestHttpJsonRequestFactory {
-
-  private final String adminName;
-  private final String adminPassword;
-  private final TestAuthServiceClient authServiceClient;
+public class TestCheAdminHttpJsonRequestFactory extends TestUserHttpJsonRequestFactory {
 
   @Inject
-  public TestAdminHttpJsonRequestFactory(
+  public TestCheAdminHttpJsonRequestFactory(
       TestAuthServiceClient authServiceClient,
-      @Named("che.admin_user.email") String adminName,
+      @Named("che.admin_user.email") String adminEmail,
       @Named("che.admin_user.password") String adminPassword) {
-    this.adminName = adminName;
-    this.adminPassword = adminPassword;
-    this.authServiceClient = authServiceClient;
-  }
-
-  protected String getAuthToken() {
-    try {
-      return authServiceClient.login(adminName, adminPassword);
-    } catch (Exception ex) {
-      throw new RuntimeException("Failed to get access token for admin user");
-    }
+    super(authServiceClient, adminEmail, adminPassword);
   }
 }

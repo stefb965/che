@@ -18,9 +18,6 @@ import com.google.inject.assistedinject.Assisted;
  */
 public interface TestUserFactory {
 
-  /** Creates new test user with generated e-mail and password */
-  TestUserImpl create();
-
   /** Creates new test user with generated password */
   TestUserImpl create(@Assisted("email") String email);
 

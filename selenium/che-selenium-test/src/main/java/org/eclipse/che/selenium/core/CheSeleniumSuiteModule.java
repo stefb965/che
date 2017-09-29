@@ -42,7 +42,6 @@ import org.eclipse.che.selenium.core.provider.TestSvnPasswordProvider;
 import org.eclipse.che.selenium.core.provider.TestSvnRepo1Provider;
 import org.eclipse.che.selenium.core.provider.TestSvnRepo2Provider;
 import org.eclipse.che.selenium.core.provider.TestSvnUsernameProvider;
-import org.eclipse.che.selenium.core.requestfactory.TestAdminHttpJsonRequestFactory;
 import org.eclipse.che.selenium.core.requestfactory.TestUserHttpJsonRequestFactoryCreator;
 import org.eclipse.che.selenium.core.user.TestUser;
 import org.eclipse.che.selenium.core.user.TestUserFactory;
@@ -75,11 +74,9 @@ public class CheSeleniumSuiteModule extends AbstractModule {
     bind(TestIdeUrlProvider.class).to(CheTestIdeUrlProvider.class);
     bind(TestDashboardUrlProvider.class).to(CheTestDashboardUrlProvider.class);
 
-    install(new FactoryModuleBuilder().build(TestUserHttpJsonRequestFactoryCreator.class));
-
-    bind(TestMachineServiceClient.class).to(CheTestMachineServiceClient.class);
     bind(TestWorkspaceProvider.class).to(TestWorkspaceProviderImpl.class).asEagerSingleton();
 
+    install(new FactoryModuleBuilder().build(TestUserHttpJsonRequestFactoryCreator.class));
     install(new FactoryModuleBuilder().build(TestWorkspaceServiceClientFactory.class));
     install(new FactoryModuleBuilder().build(TestUserFactory.class));
 
@@ -106,11 +103,11 @@ public class CheSeleniumSuiteModule extends AbstractModule {
     return isMac() ? new MacOSActionsFactory() : new GenericActionsFactory();
   }
 
-  @Provides
+  /*@Provides
   @Named("admin")
   public OnpremTestOrganizationServiceClient getAdminOrganizationServiceClient(
       TestApiEndpointUrlProvider apiEndpointUrlProvider,
       TestAdminHttpJsonRequestFactory requestFactory) {
     return new OnpremTestOrganizationServiceClient(apiEndpointUrlProvider, requestFactory);
-  }
+  }*/
 }

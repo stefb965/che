@@ -88,7 +88,7 @@ public class TestWorkspaceProviderImpl implements TestWorkspaceProvider {
         owner,
         memoryGB,
         template,
-        testWorkspaceServiceClientFactory.create(defaultUser));
+        testWorkspaceServiceClientFactory.create(owner.getEmail(), owner.getPassword()));
   }
 
   private boolean hasDefaultValues(TestUser testUser, int memoryGB, String template) {

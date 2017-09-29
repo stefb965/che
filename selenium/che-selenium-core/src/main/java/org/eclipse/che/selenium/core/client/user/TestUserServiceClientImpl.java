@@ -26,21 +26,21 @@ import org.eclipse.che.api.core.model.user.User;
 import org.eclipse.che.api.user.shared.dto.UserDto;
 import org.eclipse.che.selenium.core.client.TestUserServiceClient;
 import org.eclipse.che.selenium.core.provider.TestApiEndpointUrlProvider;
-import org.eclipse.che.selenium.core.requestfactory.TestAdminHttpJsonRequestFactory;
+import org.eclipse.che.selenium.core.requestfactory.TestUserHttpJsonRequestFactory;
 
 /** @author Musienko Maxim */
 @Singleton
 public class TestUserServiceClientImpl implements TestUserServiceClient {
 
   private final String userServiceEndpoint;
-  private final TestAdminHttpJsonRequestFactory requestFactory;
+  private final TestUserHttpJsonRequestFactory requestFactory;
 
   @Inject
   public TestUserServiceClientImpl(
       TestApiEndpointUrlProvider apiEndpointProvider,
-      TestAdminHttpJsonRequestFactory requestFactory) {
+      TestUserHttpJsonRequestFactory testUserHttpJsonRequestFactory) {
     this.userServiceEndpoint = apiEndpointProvider.get().toString() + "user/";
-    this.requestFactory = requestFactory;
+    this.requestFactory = testUserHttpJsonRequestFactory;
   }
 
   @Override

@@ -59,7 +59,6 @@ public class Dashboard {
     this.testIdeUrlProvider = testIdeUrlProvider;
     this.testDashboardUrlProvider = testDashboardUrlProvider;
     this.loginPage = loginPage;
-
     PageFactory.initElements(seleniumWebDriver, this);
   }
 
