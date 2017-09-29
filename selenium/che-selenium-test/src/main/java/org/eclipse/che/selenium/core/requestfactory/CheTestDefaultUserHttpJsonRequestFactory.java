@@ -15,10 +15,10 @@ import com.google.inject.name.Named;
 import org.eclipse.che.selenium.core.client.TestAuthServiceClient;
 
 /** @author Anton Korneta */
-public class TestCheDefaultUserHttpJsonRequestFactory extends TestUserHttpJsonRequestFactory {
+public class CheTestDefaultUserHttpJsonRequestFactory extends TestUserHttpJsonRequestFactory {
 
   @Inject
-  public TestCheDefaultUserHttpJsonRequestFactory(
+  public CheTestDefaultUserHttpJsonRequestFactory(
       TestAuthServiceClient authServiceClient,
       @Named("che.test_user.email") String email,
       @Named("che.test_user.password") String password) {

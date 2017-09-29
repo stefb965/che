@@ -49,6 +49,7 @@ public class TestFactory {
   /** Adds authentication token into the browser and opens factory url. */
   public void authenticateAndOpen(WebDriver driver) throws Exception {
     driver.get(dashboardUrl.get().toString());
+
     if (loginPage.isOpened()) {
       loginPage.login(owner.getName(), owner.getPassword());
     }
